@@ -9,7 +9,9 @@ from flask import Flask, g, jsonify, request, render_template, session
 
 app = Flask(__name__)
 app.secret_key = 'nce1_study_secret_key_2024'
-DATABASE = 'nce_words.db'
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATABASE = os.path.join(BASE_DIR, 'nce_words.db')
 
 # ========== 数据库操作 ==========
 def get_db():
