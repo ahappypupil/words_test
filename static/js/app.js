@@ -252,7 +252,7 @@ async function doLogin() {
     const password = document.getElementById('loginPass').value.trim();
     if (!username || !password) { showToast('请输入用户名和密码', 'error'); return; }
     try {
-        const res = await fetch('/api/login', {
+        const res = await fetch(window.API_ROUTES.login, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -275,7 +275,7 @@ async function doRegister() {
     const password = document.getElementById('regPass').value.trim();
     if (!username || !password) { showToast('请填写所有必填项', 'error'); return; }
     try {
-        const res = await fetch('/api/register', {
+        const res = await fetch(window.API_ROUTES.register, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password, nickname })
@@ -291,7 +291,7 @@ async function doRegister() {
 }
 
 async function doLogout() {
-    await fetch('/api/logout', { method: 'POST' });
+    await fetch(window.API_ROUTES.logout, { method: 'POST' });
     document.getElementById('authOverlay').style.display = '';
     document.getElementById('appContainer').style.display = 'none';
     document.getElementById('loginUser').value = '';
@@ -301,7 +301,7 @@ async function doLogout() {
 
 async function checkLogin() {
     try {
-        const res = await fetch('/api/user');
+        const res = await fetch(window.API_ROUTES.user);
         const data = await res.json();
         if (data.logged_in) {
             document.getElementById('authOverlay').style.display = 'none';
@@ -368,8 +368,8 @@ async function initApp() {
 async function loadLessonGrid() {
     try {
         const [lRes, eRes] = await Promise.all([
-            fetch('/api/lessons'),
-            fetch('/api/error_words')
+            fetch(window.API_ROUTES.lessons),
+            fetch(window.API_ROUTES.errorWords)
         ]);
         const lessons = await lRes.json();
         const errors = await eRes.json();
@@ -423,7 +423,7 @@ async function startQuiz(lesson) {
     document.getElementById('quizSideRight').innerHTML = '';
 
     try {
-        const res = await fetch('/api/words/quiz', {
+        const res = await fetch(window.API_ROUTES.quiz, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ mode: state.mode, lesson: lesson })
@@ -442,7 +442,7 @@ async function startQuiz(lesson) {
 
 async function reviewErrors() {
     try {
-        const res = await fetch('/api/error_words');
+        const res = await fetch(window.API_ROUTES.errorWords);
         const data = await res.json();
         if (!data.data || data.data.length === 0) {
             showToast('没有错题可复习！', 'info');
@@ -572,13 +572,13 @@ async function handleAnswer(userAnswer, correctAnswer, event, btn) {
 
         // 记录正确到后端（如果之前有过错误尝试也一并记录）
         try {
-            await fetch('/api/log_answer', {
+            await fetch(window.API_ROUTES.logAnswer, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ word_id: q.word_id, correct: true, mode: state.mode, user_answer: userAnswer })
             });
             if (state.combo > 0 && state.combo % 5 === 0) {
-                await fetch('/api/combo_update', {
+                await fetch(window.API_ROUTES.comboUpdate, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ combo: state.combo })
@@ -607,7 +607,7 @@ async function handleAnswer(userAnswer, correctAnswer, event, btn) {
 
         // 记录错误
         try {
-            await fetch('/api/log_answer', {
+            await fetch(window.API_ROUTES.logAnswer, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ word_id: q.word_id, correct: false, mode: state.mode, user_answer: userAnswer })
@@ -711,7 +711,7 @@ function retryLesson() {
 // ========== 更新顶部栏 ==========
 async function updateTopBar() {
     try {
-        const res = await fetch('/api/stats');
+        const res = await fetch(window.API_ROUTES.stats);
         const data = await res.json();
         if (data.progress) {
             document.getElementById('topScore').textContent = data.progress.score || 0;
@@ -722,7 +722,7 @@ async function updateTopBar() {
 
 async function updateErrorDot() {
     try {
-        const res = await fetch('/api/error_words');
+        const res = await fetch(window.API_ROUTES.errorWords);
         const data = await res.json();
         const count = data.data ? data.data.length : 0;
         const dot = document.getElementById('errDot');
@@ -736,7 +736,7 @@ async function updateErrorDot() {
 // ========== 统计 ==========
 async function loadStats() {
     try {
-        const res = await fetch('/api/stats');
+        const res = await fetch(window.API_ROUTES.stats);
         const data = await res.json();
         const p = data.progress || {};
         document.getElementById('statTotal').textContent = p.total_practice_count || 0;
@@ -856,7 +856,7 @@ function switchErrorTab(btn, mode) {
 async function reviewErrorsByMode() {
     const mode = currentErrorMode || 'en2cn';
     try {
-        const res = await fetch('/api/error_words' + (currentErrorMode ? `?mode=${currentErrorMode}` : ''));
+        const res = await fetch(window.API_ROUTES.errorWords + (currentErrorMode ? `?mode=${currentErrorMode}` : ''));
         const data = await res.json();
         if (!data.data || !data.data.length) {
             showToast('没有错题可复习！', 'info');
@@ -903,7 +903,7 @@ async function reviewErrorsByMode() {
 async function clearErrors() {
     const modeText = currentErrorMode ? `${modeNames[currentErrorMode]}的` : '';
     if (!confirm(`确定清空${modeText}错题？`)) return;
-    await fetch('/api/error_words/clear', {
+    await fetch(window.API_ROUTES.clearErrors, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode: currentErrorMode })
@@ -916,7 +916,7 @@ async function clearErrors() {
 
 async function resetProgress() {
     if (!confirm('确定重置所有学习进度？不可恢复！')) return;
-    await fetch('/api/reset_progress', { method: 'POST' });
+    await fetch(window.API_ROUTES.resetProgress, { method: 'POST' });
     showToast('进度已重置', 'info');
     updateTopBar();
     updateErrorDot();

@@ -7,6 +7,23 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+<!-- API 路由配置 -->
+<script>
+window.API_ROUTES = {
+    login: "{{ url_for('login') }}",
+    register: "{{ url_for('register') }}",
+    logout: "{{ url_for('logout') }}",
+    user: "{{ url_for('get_user') }}",
+    lessons: "{{ url_for('get_lessons') }}",
+    quiz: "{{ url_for('get_quiz') }}",
+    logAnswer: "{{ url_for('log_answer') }}",
+    comboUpdate: "{{ url_for('combo_update') }}",
+    stats: "{{ url_for('get_stats') }}",
+    errorWords: "{{ url_for('get_error_words') }}",
+    clearErrors: "{{ url_for('clear_error_words') }}",
+    resetProgress: "{{ url_for('reset_progress') }}"
+};
+</script>
 
 <!-- ==================== 登录/注册弹窗 ==================== -->
 <div class="overlay" id="authOverlay">
