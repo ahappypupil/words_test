@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCE1 单词练习 - 新概念英语第一册</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- ==================== 登录/注册弹窗 ==================== -->
+<div class="overlay" id="authOverlay">
+    <div class="auth-card" id="authCard">
+        <div class="auth-logo">📖 NCE1 单词练习</div>
+        <!-- 登录表单 -->
+        <div id="loginForm">
+            <h3>登录</h3>
+            <input type="text" id="loginUser" placeholder="用户名" autocomplete="username">
+            <input type="password" id="loginPass" placeholder="密码" autocomplete="current-password">
+            <button class="btn-primary" onclick="doLogin()">登 录</button>
+            <p class="auth-switch">还没有账号？<a href="#" onclick="showRegister()">立即注册</a></p>
+            <p class="auth-hint">注册后学习数据将自动保存</p>
+        </div>
+        <!-- 注册表单 -->
+        <div id="registerForm" style="display:none">
+            <h3>注册</h3>
+            <input type="text" id="regUser" placeholder="用户名 (2-20字符)" autocomplete="off">
+            <input type="text" id="regNick" placeholder="昵称 (选填)" autocomplete="off">
+            <input type="password" id="regPass" placeholder="密码 (至少4位)" autocomplete="new-password">
+            <button class="btn-primary" onclick="doRegister()">注 册</button>
+            <p class="auth-switch">已有账号？<a href="#" onclick="showLogin()">去登录</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== 全屏主界面 ==================== -->
+<div class="app-container" id="appContainer" style="display:none">
+
+    <!-- 顶部栏 -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <span class="logo-icon">📖</span>
+            <span class="logo-text">NCE1</span>
+        </div>
+        <div class="topbar-center" id="pageTitle">开始练习</div>
+        <div class="topbar-right">
+            <span class="user-badge">👤 <span id="topNickname"></span></span>
+            <span class="badge score-badge">⭐ <span id="topScore">0</span></span>
+            <span class="badge streak-badge">🔥 <span id="topStreak">0</span>天</span>
+            <button class="btn-icon" onclick="doLogout()" title="退出登录">🚪</button>
+        </div>
+    </header>
+
+    <!-- 内容区：全屏居中 -->
+    <div class="view-container">
+
+        <!-- ===== 首页：模式&课程选择 ===== -->
+        <div class="view" id="view-home">
+            <div class="ppt-card home-card">
+                <div class="mode-row">
+                    <button class="mode-btn active" data-mode="en2cn" onclick="selectModeBtn(this)">🇬🇧→🇨🇳 英译汉</button>
+                    <button class="mode-btn" data-mode="cn2en" onclick="selectModeBtn(this)">🇨🇳→🇬🇧 汉译英</button>
+                    <button class="mode-btn" data-mode="cloze" onclick="selectModeBtn(this)">🔤 单词补全</button>
+                </div>
+
+                <div class="lesson-grid" id="lessonGrid">
+                    <!-- JS动态生成 -->
+                </div>
+
+                <button class="btn-start" id="btnStartAll" onclick="startQuiz('')">
+                    🚀 随机全部
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== 答题页：三栏布局 ===== -->
+        <div class="view" id="view-quiz" style="display:none">
+            <div class="quiz-fullscreen">
+                <!-- 进度条 -->
+                <div class="quiz-progress">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressLabel">1/10</span>
+                        <span class="progress-combo" id="quizCombo">⚡0</span>
+                        <span class="progress-score">⭐<span id="quizScore">0</span></span>
+                    </div>
+                </div>
+
+                <!-- 三栏布局 -->
+                <div class="quiz-columns">
+                    <!-- 左侧动画区 -->
+                    <div class="quiz-side quiz-side-left" id="quizSideLeft"></div>
+
+                    <!-- 中间答题区 -->
+                    <div class="quiz-center">
+                        <div class="quiz-card" id="quizCard">
+                            <div class="question-main" id="questionMain">excuse</div>
+                            <div class="question-sub" id="questionSub">音标: /ɪkˈskjuːs/</div>
+                            <div class="options-grid" id="optionsGrid"></div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧动画区 -->
+                    <div class="quiz-side quiz-side-right" id="quizSideRight"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 结果页 ===== -->
+        <div class="view" id="view-result" style="display:none">
+            <div class="ppt-card result-card">
+                <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+                <div class="result-content">
+                    <div class="result-trophy" id="resultTrophy">🏆</div>
+                    <h2>练习完成!</h2>
+                    <div class="result-stats">
+                        <div class="result-stat">
+                            <div class="result-stat-value" id="resultCorrect">0</div>
+                            <div class="result-stat-label">✅ 正确</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="result-stat-value" id="resultWrong">0</div>
+                            <div class="result-stat-label">❌ 错误</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="result-stat-value" id="resultRate">0%</div>
+                            <div class="result-stat-label">📈 正确率</div>
+                        </div>
+                        <div class="result-stat">
+                            <div class="result-stat-value" id="resultCombo">0</div>
+                            <div class="result-stat-label">🔥 最大连击</div>
+                        </div>
+                    </div>
+                    <div class="result-grade" id="resultGrade"></div>
+                    <div class="result-actions">
+                        <button class="btn-again" onclick="retryLesson()">🔄 再练一遍</button>
+                        <button class="btn-back" onclick="goHome()">🏠 返回首页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 统计页 ===== -->
+        <div class="view" id="view-stats" style="display:none">
+            <div class="ppt-card stats-card">
+                <h2>📊 学习统计</h2>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">总练习量</div></div>
+                    <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" id="statScore">0</div><div class="stat-lbl">总积分</div></div>
+                    <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" id="statStreak">0</div><div class="stat-lbl">连续学习</div></div>
+                    <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-num" id="statCombo">0</div><div class="stat-lbl">最高连击</div></div>
+                </div>
+                <div class="mode-stats-section">
+                    <h3>各模式正确率</h3>
+                    <div class="mode-stats-grid" id="modeStatsGrid"></div>
+                </div>
+                <div class="recent-section">
+                    <h3>最近练习</h3>
+                    <div class="recent-list" id="recentList"></div>
+                </div>
+                <button class="btn-danger" onclick="resetProgress()">🔄 重置进度</button>
+                <button class="btn-back" onclick="goHome()" style="margin-left:10px">🏠 返回</button>
+            </div>
+        </div>
+
+        <!-- ===== 错题本 ===== -->
+        <div class="view" id="view-errorbook" style="display:none">
+            <div class="ppt-card errorbook-card">
+                <div class="errorbook-header">
+                    <h2>📒 错题本</h2>
+                    <div class="errorbook-actions">
+                        <button class="btn-warning" id="btnReviewErrors" onclick="reviewErrorsByMode()">🔄 练习错题</button>
+                        <button class="btn-danger-sm" id="btnClearErrors" onclick="clearErrors()">🗑️ 清空</button>
+                    </div>
+                </div>
+
+                <!-- 题型 Tab -->
+                <div class="errorbook-tabs" id="errorbookTabs">
+                    <button class="error-tab active" data-mode="" onclick="switchErrorTab(this, '')">
+                        全部<span class="error-tab-count" id="errCountAll">0</span>
+                    </button>
+                    <button class="error-tab" data-mode="en2cn" onclick="switchErrorTab(this, 'en2cn')">
+                        🇬🇧→🇨🇳 英译汉<span class="error-tab-count" id="errCountEn2cn">0</span>
+                    </button>
+                    <button class="error-tab" data-mode="cn2en" onclick="switchErrorTab(this, 'cn2en')">
+                        🇨🇳→🇬🇧 汉译英<span class="error-tab-count" id="errCountCn2en">0</span>
+                    </button>
+                    <button class="error-tab" data-mode="cloze" onclick="switchErrorTab(this, 'cloze')">
+                        🔤 补全<span class="error-tab-count" id="errCountCloze">0</span>
+                    </button>
+                </div>
+
+                <div class="error-list" id="errorList">
+                    <div class="empty-state" id="errorEmpty">
+                        <div class="empty-icon">🎉</div>
+                        <p>还没有错题！继续保持！</p>
+                    </div>
+                </div>
+                <button class="btn-back" onclick="goHome()">🏠 返回</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="bottombar">
+        <button class="nav-btn active" data-view="home" onclick="switchView('home')">🏠 练习</button>
+        <button class="nav-btn" data-view="stats" onclick="switchView('stats')">📊 统计</button>
+        <button class="nav-btn" data-view="errorbook" onclick="switchView('errorbook')">📒 错题<span class="err-dot" id="errDot"></span></button>
+    </nav>
+</div>
+
+<!-- Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
