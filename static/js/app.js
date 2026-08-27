@@ -393,15 +393,23 @@ function switchHomeTab(tab) {
 // ========== 分类网格 ==========
 async function loadCategoryGrid() {
     try {
-        const res = await fetch(window.API_ROUTES.categories);
-        const data = await res.json();
+        const [cRes, mRes] = await Promise.all([
+            fetch(window.API_ROUTES.categories),
+            fetch(window.API_ROUTES.masteredCount + '?mode=' + state.mode)
+        ]);
+        const data = await cRes.json();
+        const mastered = await mRes.json();
+        const masteredMap = mastered.categories || {};
         const grid = document.getElementById('categoryGrid');
         if (!data.data || data.data.length === 0) {
             grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-light)">暂无分类数据</div>';
             return;
         }
         grid.innerHTML = data.data.map(c => {
-            return `<button class="category-btn" onclick="startQuizByCategory('${c.category}')" title="${c.category}: ${c.cnt}个单词"><span class="category-name">${c.category}</span><span class="category-count">${c.cnt}</span></button>`;
+            const masteredCnt = masteredMap[c.category] || 0;
+            const done = masteredCnt >= c.cnt;
+            const doneClass = done ? ' all-done' : '';
+            return `<button class="category-btn${doneClass}" onclick="startQuizByCategory('${c.category}')" title="${c.category}: ${masteredCnt}/${c.cnt}已掌握"><span class="category-name">${c.category}</span><span class="category-count">${masteredCnt}/${c.cnt}</span></button>`;
         }).join('');
     } catch (e) { showToast('加载分类失败', 'error'); }
 }
@@ -446,18 +454,23 @@ async function startQuizByCategory(category) {
 // ========== 课程网格 ==========
 async function loadLessonGrid() {
     try {
-        const [lRes, eRes] = await Promise.all([
+        const [lRes, eRes, mRes] = await Promise.all([
             fetch(window.API_ROUTES.lessons),
-            fetch(window.API_ROUTES.errorWords)
+            fetch(window.API_ROUTES.errorWords),
+            fetch(window.API_ROUTES.masteredCount + '?mode=' + state.mode)
         ]);
         const lessons = await lRes.json();
         const errors = await eRes.json();
+        const mastered = await mRes.json();
 
         // 构建错题课程集合
         const errLessons = new Set();
         if (errors.data) {
             errors.data.forEach(w => { if (w.lesson) errLessons.add(w.lesson); });
         }
+
+        // 已掌握数（按课时）
+        const masteredMap = mastered.lessons || {};
 
         const grid = document.getElementById('lessonGrid');
         if (!lessons.data || lessons.data.length === 0) {
@@ -467,9 +480,12 @@ async function loadLessonGrid() {
 
         state.lessonGridData = {};
         grid.innerHTML = lessons.data.map(l => {
-            state.lessonGridData[l.lesson] = { count: l.cnt, hasErr: errLessons.has(l.lesson) };
+            const masteredCnt = masteredMap[String(l.lesson)] || 0;
+            const done = masteredCnt >= l.cnt;
+            state.lessonGridData[l.lesson] = { count: l.cnt, hasErr: errLessons.has(l.lesson), mastered: masteredCnt };
             const errClass = errLessons.has(l.lesson) ? ' has-err' : '';
-            return `<button class="lesson-btn${errClass}" onclick="startQuiz(${l.lesson})" title="Lesson ${l.lesson}: ${l.cnt}个单词${errLessons.has(l.lesson) ? ' (有错题)' : ''}">${l.lesson}</button>`;
+            const doneClass = done ? ' all-done' : '';
+            return `<button class="lesson-btn${errClass}${doneClass}" onclick="startQuiz(${l.lesson})" title="Lesson ${l.lesson}: ${masteredCnt}/${l.cnt}已掌握">${l.lesson}<span class="lesson-progress">${masteredCnt}/${l.cnt}</span></button>`;
         }).join('');
     } catch (e) { showToast('加载课程失败', 'error'); }
 }
@@ -479,6 +495,12 @@ function selectModeBtn(btn) {
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state.mode = btn.dataset.mode;
+    // 刷新课时/分类卡片，显示当前题型的掌握进度
+    if (state.homeTab === 'category') {
+        loadCategoryGrid();
+    } else {
+        loadLessonGrid();
+    }
 }
 
 // ========== 开始练习 ==========

@@ -247,6 +247,40 @@ def get_categories():
         cats = cursor.fetchall()
     return jsonify({'data': [dict(c) for c in cats]})
 
+@app.route('/api/mastered_count', methods=['GET'])
+def get_mastered_count():
+    """获取当前题型下各课时/分类的已掌握单词数"""
+    user = login_required()
+    if not user:
+        return jsonify({'error': '请先登录'}), 401
+    mode = request.args.get('mode', 'en2cn')
+    db = get_db()
+    with db.cursor() as cursor:
+        # 按课时统计已掌握数
+        cursor.execute("""
+            SELECT w.lesson, COUNT(*) as mastered_cnt
+            FROM mastered_words m
+            JOIN words w ON m.word_id = w.id
+            WHERE m.user_id = %s AND m.mode = %s
+            GROUP BY w.lesson
+        """, (user['id'], mode))
+        lesson_data = cursor.fetchall()
+
+        # 按分类统计已掌握数
+        cursor.execute("""
+            SELECT w.category, COUNT(*) as mastered_cnt
+            FROM mastered_words m
+            JOIN words w ON m.word_id = w.id
+            WHERE m.user_id = %s AND m.mode = %s AND w.category != ''
+            GROUP BY w.category
+        """, (user['id'], mode))
+        cat_data = cursor.fetchall()
+
+    return jsonify({
+        'lessons': {str(r['lesson']): r['mastered_cnt'] for r in lesson_data},
+        'categories': {r['category']: r['mastered_cnt'] for r in cat_data}
+    })
+
 @app.route('/api/words/quiz', methods=['POST'])
 def get_quiz():
     """获取指定课程和模式的练习题"""
@@ -272,6 +306,19 @@ def get_quiz():
     words = [dict(w) for w in words]
     if not words:
         return jsonify({'error': '没有符合条件的单词'}), 404
+
+    # 排除该用户在该题型下已掌握的单词（答对过就不再出现）
+    with db.cursor() as cursor:
+        cursor.execute("""
+            SELECT word_id FROM mastered_words
+            WHERE user_id = %s AND mode = %s
+        """, (user['id'], mode))
+        mastered_rows = cursor.fetchall()
+    mastered_ids = {m['word_id'] for m in mastered_rows}
+    words = [w for w in words if w['id'] not in mastered_ids]
+
+    if not words:
+        return jsonify({'error': '该题型所有单词已掌握'}), 404
 
     # 获取该用户在该范围内的错题（用于优先出题）
     if lesson or category:
@@ -389,6 +436,15 @@ def log_answer():
         if not correct and word_id:
             cursor.execute("INSERT INTO error_log (user_id, word_id, error_type) VALUES (%s, %s, %s)",
                            (uid, int(word_id), mode))
+            # 答错时清除该单词该题型的已掌握记录（需要重新练习）
+            cursor.execute("DELETE FROM mastered_words WHERE user_id = %s AND word_id = %s AND mode = %s",
+                           (uid, int(word_id), mode))
+        elif correct and word_id:
+            # 答对时记录为已掌握，该题型不再出现此单词
+            cursor.execute("""
+                INSERT IGNORE INTO mastered_words (user_id, word_id, mode)
+                VALUES (%s, %s, %s)
+            """, (uid, int(word_id), mode))
 
         # 更新统计
         cursor.execute("""
@@ -599,6 +655,7 @@ def reset_progress():
     with db.cursor() as cursor:
         cursor.execute("DELETE FROM stats WHERE user_id = %s", (uid,))
         cursor.execute("DELETE FROM error_log WHERE user_id = %s", (uid,))
+        cursor.execute("DELETE FROM mastered_words WHERE user_id = %s", (uid,))
         cursor.execute("UPDATE user_progress SET score=0, max_combo=0, study_streak=0, total_practice_count=0, last_study_date='' WHERE user_id = %s", (uid,))
     db.commit()
     return jsonify({'success': True})

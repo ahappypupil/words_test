@@ -84,6 +84,18 @@ def init_database():
         FOREIGN KEY (word_id) REFERENCES words(id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4''')
 
+    # ---- 已掌握单词表（某单词某题型答对后记录，不再出现）----
+    cursor.execute('''CREATE TABLE mastered_words (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        word_id INT NOT NULL,
+        mode VARCHAR(20) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY uk_user_word_mode (user_id, word_id, mode),
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (word_id) REFERENCES words(id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4''')
+
     # ---- 练习统计表 ----
     cursor.execute('''CREATE TABLE stats (
         id INT AUTO_INCREMENT PRIMARY KEY,
