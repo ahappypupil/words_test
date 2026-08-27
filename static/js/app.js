@@ -620,6 +620,12 @@ function showQuestion() {
         document.getElementById('btnSpellSubmit').disabled = false;
         // 初始化虚拟键盘
         buildVkbd();
+        // 绑定物理键盘输入事件（实时更新占位提示）
+        if (!input._vkbdBound) {
+            input.addEventListener('input', () => updateSpellHint());
+            input._vkbdBound = true;
+        }
+        input.focus();
     } else {
         // 选择题模式：显示选项
         grid.style.display = '';
