@@ -25,7 +25,9 @@ const state = {
     isReviewing: false,
     lessonGridData: {}, // lesson -> { count, hasErr }
     homeTab: 'lesson', // 'lesson' or 'category'
-    currentView: 'home'
+    currentView: 'home',
+    wordSet: '', // 当前单词集
+    wordSets: [] // 所有单词集列表
 };
 
 // ========== 音效 ==========
@@ -270,6 +272,7 @@ async function doLogin() {
             document.getElementById('authOverlay').style.display = 'none';
             document.getElementById('appContainer').style.display = '';
             document.getElementById('topNickname').textContent = data.user.nickname;
+            state.wordSet = data.user.default_word_set || '';
             initApp();
         } else {
             showToast(data.error || '登录失败', 'error');
@@ -315,6 +318,7 @@ async function checkLogin() {
             document.getElementById('authOverlay').style.display = 'none';
             document.getElementById('appContainer').style.display = '';
             document.getElementById('topNickname').textContent = data.user.nickname;
+            state.wordSet = data.user.default_word_set || '';
             initApp();
         }
     } catch (e) { /* 保持登录界面 */ }
@@ -354,11 +358,12 @@ function switchView(viewName) {
     const btn = document.querySelector(`.nav-btn[data-view="${viewName}"]`);
     if (btn) btn.classList.add('active');
 
-    const titles = { home: '选择练习', quiz: '答题中', result: '练习完成', stats: '学习统计', errorbook: '错题本' };
+    const titles = { home: '选择练习', quiz: '答题中', result: '练习完成', stats: '学习统计', errorbook: '错题本', wordsets: '单词集管理' };
     document.getElementById('pageTitle').textContent = titles[viewName] || '';
 
     if (viewName === 'stats') loadStats();
     if (viewName === 'errorbook') loadErrorBook();
+    if (viewName === 'wordsets') loadWordsetManageList();
 }
 
 function goHome() {
@@ -369,10 +374,187 @@ function goHome() {
 
 // ========== 初始化 ==========
 async function initApp() {
+    await loadWordsets();
     await loadLessonGrid();
     await updateTopBar();
     updateErrorDot();
     switchView('home');
+}
+
+// ========== 单词集管理 ==========
+async function loadWordsets() {
+    try {
+        const res = await fetch(window.API_ROUTES.wordsets);
+        const data = await res.json();
+        state.wordSets = data.data || [];
+        const sel = document.getElementById('wordsetSelect');
+        if (!sel) return;
+        if (state.wordSets.length <= 1) {
+            sel.style.display = 'none';
+            return;
+        }
+        sel.style.display = '';
+        sel.innerHTML = state.wordSets.map(s =>
+            `<option value="${s.word_set}" ${state.wordSet === s.word_set ? 'selected' : ''}>${s.word_set} (${s.cnt})</option>`
+        ).join('');
+        // 如果当前未选，取第一个
+        if (!state.wordSet && state.wordSets.length > 0) {
+            state.wordSet = state.wordSets[0].word_set;
+        }
+    } catch (e) { console.error('loadWordsets error:', e); }
+}
+
+async function switchWordset(ws) {
+    state.wordSet = ws;
+    // 通知后端保存
+    try {
+        await fetch(window.API_ROUTES.setDefaultWordset, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ word_set: ws })
+        });
+    } catch (e) { /* ignore */ }
+    // 刷新数据
+    loadLessonGrid();
+    if (state.homeTab === 'category') loadCategoryGrid();
+    updateTopBar();
+    updateErrorDot();
+}
+
+// ========== 单词集管理 ==========
+let _importFileData = null;
+
+async function loadWordsetManageList() {
+    try {
+        const res = await fetch(window.API_ROUTES.wordsets);
+        const data = await res.json();
+        const list = document.getElementById('wordsetManageList');
+        if (!data.data || data.data.length === 0) {
+            list.innerHTML = '<p style="color:var(--text-light);text-align:center">暂无单词集</p>';
+            return;
+        }
+        list.innerHTML = data.data.map(s => {
+            const isActive = s.word_set === state.wordSet;
+            return `<div class="wordset-manage-item${isActive ? ' active' : ''}">
+                <div class="wordset-manage-info">
+                    <span class="wordset-manage-name">${s.word_set}</span>
+                    <span class="wordset-manage-count">${s.cnt} 个单词</span>
+                </div>
+                <div class="wordset-manage-actions">
+                    <button class="btn-sm" onclick="viewWordsetDetail('${s.word_set}')">👁️ 查看</button>
+                    <button class="btn-sm" onclick="useWordset('${s.word_set}')">${isActive ? '✅ 当前' : '切换'}</button>
+                </div>
+            </div>`;
+        }).join('');
+    } catch (e) { showToast('加载单词集列表失败', 'error'); }
+}
+
+function handleImportFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (!Array.isArray(data)) { showToast('JSON格式错误：需要数组', 'error'); return; }
+            _importFileData = data;
+            // 自动填充名称（用文件名）
+            const nameInput = document.getElementById('importWordsetName');
+            if (!nameInput.value) {
+                nameInput.value = file.name.replace(/\.json$/i, '');
+            }
+            // 显示预览
+            document.getElementById('importPreview').style.display = '';
+            document.getElementById('previewCount').textContent = data.length;
+            const previewList = document.getElementById('previewList');
+            previewList.innerHTML = data.slice(0, 10).map(w =>
+                `<span class="preview-word">${w.word || ''}: ${w.chinese || ''}</span>`
+            ).join('') + (data.length > 10 ? '<span class="preview-more">...</span>' : '');
+        } catch (err) {
+            showToast('JSON解析失败: ' + err.message, 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
+async function doImportWordset() {
+    const name = document.getElementById('importWordsetName').value.trim();
+    if (!name) { showToast('请输入单词集名称', 'error'); return; }
+    if (!_importFileData) { showToast('请先选择JSON文件', 'error'); return; }
+
+    const btn = document.getElementById('btnImport');
+    btn.disabled = true;
+    btn.textContent = '导入中...';
+
+    try {
+        const res = await fetch(window.API_ROUTES.importWordset, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ word_set: name, words: _importFileData })
+        });
+        const data = await res.json();
+        if (data.error) { showToast(data.error, 'error'); return; }
+        showToast(`成功导入 ${data.count} 个单词到「${data.word_set}」`, 'success');
+        // 清空表单
+        document.getElementById('importWordsetName').value = '';
+        document.getElementById('importFile').value = '';
+        document.getElementById('importPreview').style.display = 'none';
+        _importFileData = null;
+        // 刷新列表和顶部下拉
+        loadWordsetManageList();
+        loadWordsets();
+    } catch (e) {
+        showToast('导入失败', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '导入';
+    }
+}
+
+async function viewWordsetDetail(ws, page = 1) {
+    document.getElementById('wordsetDetailSection').style.display = '';
+    document.getElementById('detailTitle').textContent = `📖 ${ws}`;
+    // 隐藏导入区和列表
+    document.querySelector('.wordset-import-area').style.display = 'none';
+    document.querySelector('.wordset-list-section').style.display = 'none';
+
+    try {
+        const res = await fetch(`/api/wordsets/${encodeURIComponent(ws)}?page=${page}`);
+        const data = await res.json();
+        document.getElementById('detailStats').innerHTML =
+            `<span class="detail-stat">单词总数: <strong>${data.total}</strong></span>` +
+            `<span class="detail-stat">课时数: <strong>${data.lessons}</strong></span>` +
+            `<span class="detail-stat">分类数: <strong>${data.categories}</strong></span>`;
+
+        const tbody = document.getElementById('wordTableBody');
+        tbody.innerHTML = data.words.map(w =>
+            `<tr><td class="wt-word">${w.word}</td><td class="wt-chinese">${w.chinese}</td><td class="wt-phonetic">${w.phonetic || '—'}</td><td>${w.lesson || '—'}</td><td>${w.category || '—'}</td></tr>`
+        ).join('');
+
+        // 分页
+        const pg = document.getElementById('wordPagination');
+        if (data.total_pages <= 1) {
+            pg.innerHTML = '';
+        } else {
+            let html = '';
+            for (let i = 1; i <= data.total_pages; i++) {
+                html += `<button class="pg-btn${i === data.page ? ' active' : ''}" onclick="viewWordsetDetail('${ws}', ${i})">${i}</button>`;
+            }
+            pg.innerHTML = html;
+        }
+    } catch (e) { showToast('加载单词集详情失败', 'error'); }
+}
+
+function closeWordsetDetail() {
+    document.getElementById('wordsetDetailSection').style.display = 'none';
+    document.querySelector('.wordset-import-area').style.display = '';
+    document.querySelector('.wordset-list-section').style.display = '';
+}
+
+async function useWordset(ws) {
+    await switchWordset(ws);
+    loadWordsetManageList();
+    showToast(`已切换到「${ws}」单词集`, 'success');
 }
 
 // ========== 首页 Tab 切换 ==========

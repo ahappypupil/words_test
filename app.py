@@ -1,6 +1,6 @@
 """
-新概念英语第一册 - 单词练习工具 v2.0
-Flask + MySQL + 用户系统 + 全屏PPT答题
+新概念英语第一册 - 单词练习工具 v3.0
+Flask + MySQL + 用户系统 + 全屏PPT答题 + 多单词集
 """
 import pymysql
 import random
@@ -16,7 +16,7 @@ MYSQL_CONFIG = {
     'port': 3306,
     'user': 'devuser',
     'password': 'Dev@2026',
-    'database': 'ncf1_words',
+    'database': 'words_test',
     'charset': 'utf8mb4',
     'cursorclass': pymysql.cursors.DictCursor,
 }
@@ -56,6 +56,13 @@ def login_required():
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
+def get_user_word_set(user):
+    """获取用户当前单词集，优先 session，其次 default_word_set"""
+    ws = session.get('word_set')
+    if not ws:
+        ws = user.get('default_word_set', '')
+    return ws
+
 # ========== 单词生成逻辑 ==========
 def generate_options(correct_word, field, all_words, count=3):
     pool = [w for w in all_words if w[field] != correct_word[field]]
@@ -66,13 +73,11 @@ def generate_cloze(word):
     """挖空连续字母块，返回 (hint_str, missing_letters)"""
     w = word['word']
     l = len(w)
-    # 只处理纯字母部分
     letters = [(i, c) for i, c in enumerate(w) if c.isalpha()]
     if len(letters) < 2:
         i, c = letters[0]
         return w[:i] + '_' + w[i+1:], c
 
-    # 根据单词长度决定挖空块大小
     if l <= 3:
         size = 1
     elif l <= 5:
@@ -83,7 +88,6 @@ def generate_cloze(word):
         size = random.randint(2, 4)
 
     size = min(size, len(letters))
-    # 随机选择一个连续块
     max_start = len(letters) - size
     start_idx = random.randint(0, max_start)
     start_pos = letters[start_idx][0]
@@ -108,11 +112,9 @@ def generate_cloze_options(missing_letters, count=3):
     while len(distractors) < count and attempts < max_attempts:
         attempts += 1
         if n == 1:
-            # 单字母：替换成相似字母
             if ml in vowels:
                 c = random.choice(vowels.replace(ml, ''))
             else:
-                # 50%换成其他辅音，50%换成元音
                 if random.random() > 0.5 and ml in consonants:
                     pool = consonants.replace(ml, '') if len(consonants.replace(ml, '')) > 1 else vowels
                 else:
@@ -120,7 +122,6 @@ def generate_cloze_options(missing_letters, count=3):
                 c = random.choice(pool)
             d = c.upper() if missing_letters[0].isupper() else c
         else:
-            # 多字母：保持元音/辅音模式，生成相似组合
             result_chars = []
             for ch in missing_letters:
                 is_upper = ch.isupper()
@@ -138,7 +139,6 @@ def generate_cloze_options(missing_letters, count=3):
         if d.lower() != ml and d not in distractors:
             distractors.append(d)
 
-    # 如果没生成足够的干扰项，用随机字母补全
     while len(distractors) < count:
         d = ''.join(random.choice('aeioubcdfghjklmnpqrstvwxyz') for _ in range(n))
         if d.lower() != ml and d not in distractors:
@@ -150,6 +150,106 @@ def generate_cloze_options(missing_letters, count=3):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# ---- 单词集 ----
+@app.route('/api/wordsets', methods=['GET'])
+def get_wordsets():
+    """获取所有单词集列表"""
+    db = get_db()
+    with db.cursor() as cursor:
+        cursor.execute("SELECT word_set, COUNT(*) as cnt FROM words GROUP BY word_set ORDER BY MIN(id)")
+        sets = cursor.fetchall()
+    return jsonify({'data': [dict(s) for s in sets]})
+
+@app.route('/api/wordsets/default', methods=['POST'])
+def set_default_wordset():
+    """设置用户默认单词集"""
+    user = login_required()
+    if not user:
+        return jsonify({'error': '请先登录'}), 401
+    data = request.json or {}
+    ws = data.get('word_set', '')
+    session['word_set'] = ws
+    with db.cursor() as cursor:
+        cursor.execute("UPDATE users SET default_word_set = %s WHERE id = %s", (ws, user['id']))
+    db = get_db()
+    db.commit()
+    return jsonify({'success': True})
+
+@app.route('/api/wordsets/import', methods=['POST'])
+def import_wordset():
+    """导入新单词集（JSON格式，保存为文件并写入数据库）"""
+    user = login_required()
+    if not user:
+        return jsonify({'error': '请先登录'}), 401
+    data = request.json or {}
+    word_set_name = data.get('word_set', '').strip()
+    words_data = data.get('words', [])
+    if not word_set_name:
+        return jsonify({'error': '单词集名称不能为空'}), 400
+    if not words_data or not isinstance(words_data, list):
+        return jsonify({'error': '单词数据不能为空'}), 400
+
+    # 验证单词格式
+    for w in words_data:
+        if not isinstance(w, dict) or 'word' not in w or 'chinese' not in w:
+            return jsonify({'error': '单词格式错误，需包含 word 和 chinese 字段'}), 400
+
+    # 保存为 JSON 文件
+    import os, json
+    filename = f'{word_set_name}.json'
+    filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(words_data, f, ensure_ascii=False, indent=2)
+
+    # 写入数据库
+    db = get_db()
+    with db.cursor() as cursor:
+        # 检查是否已存在该单词集
+        cursor.execute("SELECT COUNT(*) as cnt FROM words WHERE word_set = %s", (word_set_name,))
+        if cursor.fetchone()['cnt'] > 0:
+            # 已存在则先删除旧数据
+            cursor.execute("DELETE FROM words WHERE word_set = %s", (word_set_name,))
+        for w in words_data:
+            cursor.execute(
+                'INSERT INTO words (word, chinese, phonetic, lesson, category, word_set) VALUES (%s, %s, %s, %s, %s, %s)',
+                (w['word'], w['chinese'], w.get('phonetic', ''), w.get('lesson', 1), w.get('category', ''), word_set_name)
+            )
+    db.commit()
+
+    return jsonify({'success': True, 'word_set': word_set_name, 'count': len(words_data)})
+
+@app.route('/api/wordsets/<word_set_name>', methods=['GET'])
+def get_wordset_detail(word_set_name):
+    """查看单词集详情：单词列表、课时数、分类数等"""
+    db = get_db()
+    with db.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) as cnt FROM words WHERE word_set = %s", (word_set_name,))
+        total = cursor.fetchone()['cnt']
+        cursor.execute("SELECT COUNT(DISTINCT lesson) as cnt FROM words WHERE word_set = %s", (word_set_name,))
+        lessons = cursor.fetchone()['cnt']
+        cursor.execute("SELECT COUNT(DISTINCT category) as cnt FROM words WHERE word_set = %s AND category != ''", (word_set_name,))
+        categories = cursor.fetchone()['cnt']
+
+        # 分页查询单词列表
+        page = int(request.args.get('page', 1))
+        per_page = 50
+        offset = (page - 1) * per_page
+        cursor.execute("SELECT word, chinese, phonetic, lesson, category FROM words WHERE word_set = %s ORDER BY lesson, id LIMIT %s OFFSET %s",
+                       (word_set_name, per_page, offset))
+        word_list = cursor.fetchall()
+        cursor.execute("SELECT COUNT(*) as cnt FROM words WHERE word_set = %s", (word_set_name,))
+        total_count = cursor.fetchone()['cnt']
+    return jsonify({
+        'word_set': word_set_name,
+        'total': total,
+        'lessons': lessons,
+        'categories': categories,
+        'words': [dict(w) for w in word_list],
+        'page': page,
+        'per_page': per_page,
+        'total_pages': (total_count + per_page - 1) // per_page
+    })
 
 # ---- 用户认证 ----
 @app.route('/api/register', methods=['POST'])
@@ -191,7 +291,7 @@ def login():
         if not user or user['password_hash'] != hash_password(password):
             return jsonify({'error': '用户名或密码错误'}), 401
         session['user_id'] = user['id']
-        # 确保有进度记录
+        session['word_set'] = user.get('default_word_set', '')
         cursor.execute("SELECT * FROM user_progress WHERE user_id = %s", (user['id'],))
         prog = cursor.fetchone()
         if not prog:
@@ -202,7 +302,8 @@ def login():
         'user': {
             'id': user['id'],
             'username': user['username'],
-            'nickname': user['nickname'] or user['username']
+            'nickname': user['nickname'] or user['username'],
+            'default_word_set': user.get('default_word_set', '')
         }
     })
 
@@ -216,22 +317,29 @@ def get_user():
     user = get_current_user()
     if not user:
         return jsonify({'logged_in': False})
+    ws = session.get('word_set') or user.get('default_word_set', '')
     return jsonify({
         'logged_in': True,
         'user': {
             'id': user['id'],
             'username': user['username'],
-            'nickname': user['nickname'] or user['username']
+            'nickname': user['nickname'] or user['username'],
+            'default_word_set': ws
         }
     })
 
 # ---- 单词练习 ----
 @app.route('/api/lessons', methods=['GET'])
 def get_lessons():
+    user = login_required()
+    if not user:
+        return jsonify({'error': '请先登录'}), 401
+    ws = get_user_word_set(user)
     db = get_db()
     with db.cursor() as cursor:
         cursor.execute(
-            "SELECT lesson, COUNT(*) as cnt FROM words GROUP BY lesson ORDER BY lesson"
+            "SELECT lesson, COUNT(*) as cnt FROM words WHERE word_set = %s GROUP BY lesson ORDER BY lesson",
+            (ws,)
         )
         lessons = cursor.fetchall()
     return jsonify({'data': [dict(l) for l in lessons]})
@@ -239,41 +347,46 @@ def get_lessons():
 @app.route('/api/categories', methods=['GET'])
 def get_categories():
     """获取所有思维导图分类"""
+    user = login_required()
+    if not user:
+        return jsonify({'error': '请先登录'}), 401
+    ws = get_user_word_set(user)
     db = get_db()
     with db.cursor() as cursor:
         cursor.execute(
-            "SELECT category, COUNT(*) as cnt FROM words WHERE category != '' GROUP BY category ORDER BY category"
+            "SELECT category, COUNT(*) as cnt FROM words WHERE word_set = %s AND category != '' GROUP BY category ORDER BY category",
+            (ws,)
         )
         cats = cursor.fetchall()
     return jsonify({'data': [dict(c) for c in cats]})
 
 @app.route('/api/mastered_count', methods=['GET'])
 def get_mastered_count():
-    """获取当前题型下各课时/分类的已掌握单词数"""
+    """获取各课时/分类的已掌握单词数（跨单词集通用，按单词文本匹配）"""
     user = login_required()
     if not user:
         return jsonify({'error': '请先登录'}), 401
-    mode = request.args.get('mode', 'en2cn')
+    ws = get_user_word_set(user)
     db = get_db()
     with db.cursor() as cursor:
-        # 按课时统计已掌握数
+        # 按课时统计已掌握数（mastered_words 按 word 文本匹配，跨单词集）
         cursor.execute("""
             SELECT w.lesson, COUNT(*) as mastered_cnt
             FROM mastered_words m
-            JOIN words w ON m.word_id = w.id
-            WHERE m.user_id = %s AND m.mode = %s
+            JOIN words w ON m.word = w.word
+            WHERE m.user_id = %s AND w.word_set = %s
             GROUP BY w.lesson
-        """, (user['id'], mode))
+        """, (user['id'], ws))
         lesson_data = cursor.fetchall()
 
         # 按分类统计已掌握数
         cursor.execute("""
             SELECT w.category, COUNT(*) as mastered_cnt
             FROM mastered_words m
-            JOIN words w ON m.word_id = w.id
-            WHERE m.user_id = %s AND m.mode = %s AND w.category != ''
+            JOIN words w ON m.word = w.word
+            WHERE m.user_id = %s AND w.word_set = %s AND w.category != ''
             GROUP BY w.category
-        """, (user['id'], mode))
+        """, (user['id'], ws))
         cat_data = cursor.fetchall()
 
     return jsonify({
@@ -290,56 +403,48 @@ def get_quiz():
 
     data = request.json
     mode = data.get('mode', 'en2cn')
-    lesson = data.get('lesson', '')  # 单个课程号
-    category = data.get('category', '')  # 思维导图分类
+    lesson = data.get('lesson', '')
+    category = data.get('category', '')
+    ws = get_user_word_set(user)
 
     db = get_db()
     with db.cursor() as cursor:
         if lesson:
-            cursor.execute("SELECT * FROM words WHERE lesson = %s", (int(lesson),))
+            cursor.execute("SELECT * FROM words WHERE word_set = %s AND lesson = %s", (ws, int(lesson)))
         elif category:
-            cursor.execute("SELECT * FROM words WHERE category = %s", (category,))
+            cursor.execute("SELECT * FROM words WHERE word_set = %s AND category = %s", (ws, category))
         else:
-            cursor.execute("SELECT * FROM words")
+            cursor.execute("SELECT * FROM words WHERE word_set = %s", (ws,))
         words = cursor.fetchall()
 
     words = [dict(w) for w in words]
     if not words:
         return jsonify({'error': '没有符合条件的单词'}), 404
 
-    # 排除该用户在该题型下已掌握的单词（答对过就不再出现）
+    # 排除已掌握的单词（按单词文本匹配，跨单词集通用）
+    word_texts = [w['word'] for w in words]
     with db.cursor() as cursor:
-        cursor.execute("""
-            SELECT word_id FROM mastered_words
-            WHERE user_id = %s AND mode = %s
-        """, (user['id'], mode))
+        fmt = ','.join(['%s'] * len(word_texts))
+        cursor.execute(f"SELECT word FROM mastered_words WHERE user_id = %s AND word IN ({fmt})",
+                       [user['id']] + word_texts)
         mastered_rows = cursor.fetchall()
-    mastered_ids = {m['word_id'] for m in mastered_rows}
-    words = [w for w in words if w['id'] not in mastered_ids]
+    mastered_words_set = {m['word'] for m in mastered_rows}
+    words = [w for w in words if w['word'] not in mastered_words_set]
 
     if not words:
-        return jsonify({'error': '该题型所有单词已掌握'}), 404
+        return jsonify({'error': '该范围内所有单词已掌握'}), 404
 
     # 获取该用户在该范围内的错题（用于优先出题）
     if lesson or category:
         with db.cursor() as cursor:
-            if lesson:
-                cursor.execute("""
-                    SELECT DISTINCT word_id FROM error_log
-                    WHERE user_id = %s AND word_id IN (
-                        SELECT id FROM words WHERE lesson = %s
-                    )
-                """, (user['id'], int(lesson)))
-            else:
-                cursor.execute("""
-                    SELECT DISTINCT word_id FROM error_log
-                    WHERE user_id = %s AND word_id IN (
-                        SELECT id FROM words WHERE category = %s
-                    )
-                """, (user['id'], category))
+            word_ids = [w['id'] for w in words]
+            fmt = ','.join(['%s'] * len(word_ids))
+            cursor.execute(f"""
+                SELECT DISTINCT word_id FROM error_log
+                WHERE user_id = %s AND word_id IN ({fmt})
+            """, [user['id']] + word_ids)
             error_ids = cursor.fetchall()
         error_id_set = {e['word_id'] for e in error_ids}
-        # 错题优先排在前面
         error_words = [w for w in words if w['id'] in error_id_set]
         normal_words = [w for w in words if w['id'] not in error_id_set]
         random.shuffle(error_words)
@@ -432,19 +537,27 @@ def log_answer():
     db = get_db()
     uid = user['id']
 
+    # 获取单词文本（用于 mastered_words 跨单词集匹配）
+    with db.cursor() as cursor:
+        cursor.execute("SELECT word FROM words WHERE id = %s", (int(word_id),))
+        word_row = cursor.fetchone()
+    word_text = word_row['word'] if word_row else ''
+
     with db.cursor() as cursor:
         if not correct and word_id:
             cursor.execute("INSERT INTO error_log (user_id, word_id, error_type) VALUES (%s, %s, %s)",
                            (uid, int(word_id), mode))
-            # 答错时清除该单词该题型的已掌握记录（需要重新练习）
-            cursor.execute("DELETE FROM mastered_words WHERE user_id = %s AND word_id = %s AND mode = %s",
-                           (uid, int(word_id), mode))
+            # 答错时清除该单词的已掌握记录
+            if word_text:
+                cursor.execute("DELETE FROM mastered_words WHERE user_id = %s AND word = %s",
+                               (uid, word_text))
         elif correct and word_id:
-            # 答对时记录为已掌握，该题型不再出现此单词
-            cursor.execute("""
-                INSERT IGNORE INTO mastered_words (user_id, word_id, mode)
-                VALUES (%s, %s, %s)
-            """, (uid, int(word_id), mode))
+            # 答对时记录为已掌握（按单词文本，跨单词集通用）
+            if word_text:
+                cursor.execute("""
+                    INSERT IGNORE INTO mastered_words (user_id, word)
+                    VALUES (%s, %s)
+                """, (uid, word_text))
 
         # 更新统计
         cursor.execute("""
@@ -512,20 +625,21 @@ def get_stats():
     if not user:
         return jsonify({'error': '请先登录'}), 401
     uid = user['id']
+    ws = get_user_word_set(user)
     db = get_db()
     with db.cursor() as cursor:
-        cursor.execute("SELECT COUNT(*) as cnt FROM words")
+        cursor.execute("SELECT COUNT(*) as cnt FROM words WHERE word_set = %s", (ws,))
         total = cursor.fetchone()['cnt']
 
-        # 错题统计
+        # 错题统计（限定当前单词集）
         cursor.execute("""
             SELECT w.id, w.word, w.chinese, w.phonetic, w.lesson, COUNT(e.id) as error_count
             FROM words w
             JOIN error_log e ON w.id = e.word_id
-            WHERE e.user_id = %s
+            WHERE e.user_id = %s AND w.word_set = %s
             GROUP BY w.id
             ORDER BY error_count DESC
-        """, (uid,))
+        """, (uid, ws))
         error_words = cursor.fetchall()
 
         cursor.execute("SELECT * FROM user_progress WHERE user_id = %s", (uid,))
@@ -550,9 +664,9 @@ def get_stats():
         cursor.execute("""
             SELECT w.lesson, COUNT(DISTINCT e.word_id) as err_word_count
             FROM error_log e JOIN words w ON e.word_id = w.id
-            WHERE e.user_id = %s
+            WHERE e.user_id = %s AND w.word_set = %s
             GROUP BY w.lesson
-        """, (uid,))
+        """, (uid, ws))
         lesson_mastery = cursor.fetchall()
 
     return jsonify({
@@ -570,11 +684,10 @@ def get_error_words():
     user = login_required()
     if not user:
         return jsonify({'error': '请先登录'}), 401
+    ws = get_user_word_set(user)
     try:
         db = get_db()
-
-        # 按题型分组查询
-        mode_filter = request.args.get('mode', '')  # 可选过滤
+        mode_filter = request.args.get('mode', '')
 
         with db.cursor() as cursor:
             if mode_filter:
@@ -584,10 +697,10 @@ def get_error_words():
                            MIN(e.created_at) as first_error, MAX(e.created_at) as last_error
                     FROM words w
                     JOIN error_log e ON w.id = e.word_id
-                    WHERE e.user_id = %s AND e.error_type = %s
+                    WHERE e.user_id = %s AND e.error_type = %s AND w.word_set = %s
                     GROUP BY w.id
                     ORDER BY error_count DESC
-                """, (user['id'], mode_filter))
+                """, (user['id'], mode_filter, ws))
             else:
                 cursor.execute("""
                     SELECT w.id, w.word, w.chinese, w.phonetic, w.lesson, COUNT(e.id) as error_count,
@@ -595,13 +708,12 @@ def get_error_words():
                            MIN(e.created_at) as first_error, MAX(e.created_at) as last_error
                     FROM words w
                     JOIN error_log e ON w.id = e.word_id
-                    WHERE e.user_id = %s
+                    WHERE e.user_id = %s AND w.word_set = %s
                     GROUP BY w.id, e.error_type
                     ORDER BY error_count DESC
-                """, (user['id'],))
+                """, (user['id'], ws))
             words = cursor.fetchall()
 
-            # 各题型统计
             cursor.execute("""
                 SELECT error_type as mode, COUNT(*) as error_count, COUNT(DISTINCT word_id) as word_count
                 FROM error_log
