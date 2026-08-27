@@ -43,7 +43,8 @@ def init_database():
         word TEXT NOT NULL,
         chinese TEXT NOT NULL,
         phonetic TEXT DEFAULT '',
-        lesson INTEGER DEFAULT 1
+        lesson INTEGER DEFAULT 1,
+        category TEXT DEFAULT ''
     )''')
 
     # ---- 错误记录表 ----
@@ -85,9 +86,23 @@ def init_database():
     # ---- 导入单词 ----
     for w in words:
         db.execute(
-            'INSERT INTO words (word, chinese, phonetic, lesson) VALUES (?, ?, ?, ?)',
-            (w['word'], w['chinese'], w.get('phonetic', ''), w.get('lesson', 1))
+            'INSERT INTO words (word, chinese, phonetic, lesson, category) VALUES (?, ?, ?, ?, ?)',
+            (w['word'], w['chinese'], w.get('phonetic', ''), w.get('lesson', 1), w.get('category', ''))
         )
+
+    # ---- 创建默认用户 ----
+    import hashlib
+    default_user = 'xby'
+    default_nick = '小白杨'
+    default_pass = hashlib.sha256('1234'.encode()).hexdigest()
+    db.execute(
+        'INSERT INTO users (username, password_hash, nickname) VALUES (?, ?, ?)',
+        (default_user, default_pass, default_nick)
+    )
+    db.execute(
+        'INSERT INTO user_progress (user_id, score) VALUES (last_insert_rowid(), 0)'
+    )
+    print(f'[INFO] 已创建默认用户: {default_user} (昵称: {default_nick})')
 
     db.commit()
 

@@ -255,6 +255,7 @@ body::after{
 .home-card{ text-align: center; display: flex; flex-direction: column; height: 100%; max-height: calc(100vh - 140px); }
 .home-card > * { flex-shrink: 0; }
 .home-card .lesson-grid{ flex: 1; min-height: 0; overflow-y: auto; }
+#lessonGridWrap{ flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
 /* ===== 题型选择（横排小按钮）===== */
 .mode-row{
     display: flex;
@@ -319,6 +320,77 @@ body::after{
 .lesson-btn.has-err::after{
     content: none;
 }
+/* ===== 首页Tab切换 ===== */
+.home-tabs{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.home-tab{
+    padding: 6px 20px;
+    border: 2px solid #e5e7eb;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.8);
+    color: var(--text-light);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.home-tab:hover{
+    border-color: var(--primary-light);
+    color: var(--primary);
+}
+.home-tab.active{
+    border-color: var(--primary);
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    color: var(--primary-dark);
+}
+
+/* ===== 分类网格 ===== */
+.category-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 4px;
+}
+#categoryGridWrap{ flex: 1; min-height: 0; overflow-y: auto; }
+.category-btn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 10px 6px;
+    border: 2px solid #e5e7eb;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, #faf5ff, #f0f9ff);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+.category-btn:hover{
+    border-color: var(--primary);
+    background: linear-gradient(135deg, #ede9fe, #dbeafe);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(124,58,237,0.15);
+}
+.category-btn .category-name{
+    font-weight: 700;
+    font-size: 13px;
+}
+.category-btn .category-count{
+    font-size: 11px;
+    color: var(--text-light);
+    background: #f3f4f6;
+    padding: 1px 8px;
+    border-radius: 10px;
+    margin-top: 2px;
+}
+
 .btn-start{
     padding: 8px 32px;
     border: none;

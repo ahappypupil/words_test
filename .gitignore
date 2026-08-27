@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+env/
+
+# IDE
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+#项目特殊文件
+*.db

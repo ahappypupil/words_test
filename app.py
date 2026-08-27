@@ -221,6 +221,15 @@ def get_lessons():
     ).fetchall()
     return jsonify({'data': [dict(l) for l in lessons]})
 
+@app.route('/api/categories', methods=['GET'])
+def get_categories():
+    """获取所有思维导图分类"""
+    db = get_db()
+    cats = db.execute(
+        "SELECT category, COUNT(*) as cnt FROM words WHERE category != '' GROUP BY category ORDER BY category"
+    ).fetchall()
+    return jsonify({'data': [dict(c) for c in cats]})
+
 @app.route('/api/words/quiz', methods=['POST'])
 def get_quiz():
     """获取指定课程和模式的练习题"""
@@ -231,25 +240,28 @@ def get_quiz():
     data = request.json
     mode = data.get('mode', 'en2cn')
     lesson = data.get('lesson', '')  # 单个课程号
+    category = data.get('category', '')  # 思维导图分类
 
     db = get_db()
     if lesson:
         words = db.execute("SELECT * FROM words WHERE lesson = ?", (int(lesson),)).fetchall()
+    elif category:
+        words = db.execute("SELECT * FROM words WHERE category = ?", (category,)).fetchall()
     else:
         words = db.execute("SELECT * FROM words").fetchall()
 
     words = [dict(w) for w in words]
     if not words:
-        return jsonify({'error': '该课程没有单词'}), 404
+        return jsonify({'error': '没有符合条件的单词'}), 404
 
-    # 获取该课程下该用户的错题（用于优先出题）
-    if lesson:
+    # 获取该用户在该范围内的错题（用于优先出题）
+    if lesson or category:
         error_ids = db.execute("""
             SELECT DISTINCT word_id FROM error_log
             WHERE user_id = ? AND word_id IN (
-                SELECT id FROM words WHERE lesson = ?
+                SELECT id FROM words WHERE """ + ("lesson = ?" if lesson else "category = ?") + """
             )
-        """, (user['id'], int(lesson))).fetchall()
+        """, (user['id'], int(lesson) if lesson else category)).fetchall()
         error_id_set = {e['word_id'] for e in error_ids}
         # 错题优先排在前面
         error_words = [w for w in words if w['id'] in error_id_set]
@@ -303,9 +315,17 @@ def get_quiz():
                 'options': opts
             })
 
+    # 确定标题
+    if lesson:
+        title = f'Lesson {lesson}'
+    elif category:
+        title = category
+    else:
+        title = '全部课程'
+
     return jsonify({
         'data': result,
-        'lesson_name': f'Lesson {lesson}' if lesson else '全部课程',
+        'lesson_name': title,
         'total': len(result)
     })
 

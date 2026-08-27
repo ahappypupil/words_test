@@ -7,6 +7,7 @@
 const state = {
     mode: 'en2cn',
     currentLesson: '',
+    currentCategory: '',
     questions: [],
     currentIndex: 0,
     combo: 0,
@@ -17,6 +18,7 @@ const state = {
     totalScoreAdd: 0,
     isReviewing: false,
     lessonGridData: {}, // lesson -> { count, hasErr }
+    homeTab: 'lesson', // 'lesson' or 'category'
     currentView: 'home'
 };
 
@@ -364,6 +366,74 @@ async function initApp() {
     switchView('home');
 }
 
+// ========== 首页 Tab 切换 ==========
+function switchHomeTab(tab) {
+    state.homeTab = tab;
+    document.querySelectorAll('.home-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.home-tab[data-tab="${tab}"]`).classList.add('active');
+    if (tab === 'lesson') {
+        document.getElementById('lessonGridWrap').style.display = '';
+        document.getElementById('categoryGridWrap').style.display = 'none';
+    } else {
+        document.getElementById('lessonGridWrap').style.display = 'none';
+        document.getElementById('categoryGridWrap').style.display = '';
+        loadCategoryGrid();
+    }
+}
+
+// ========== 分类网格 ==========
+async function loadCategoryGrid() {
+    try {
+        const res = await fetch(window.API_ROUTES.categories);
+        const data = await res.json();
+        const grid = document.getElementById('categoryGrid');
+        if (!data.data || data.data.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-light)">暂无分类数据</div>';
+            return;
+        }
+        grid.innerHTML = data.data.map(c => {
+            return `<button class="category-btn" onclick="startQuizByCategory('${c.category}')" title="${c.category}: ${c.cnt}个单词"><span class="category-name">${c.category}</span><span class="category-count">${c.cnt}</span></button>`;
+        }).join('');
+    } catch (e) { showToast('加载分类失败', 'error'); }
+}
+
+async function startQuizByCategory(category) {
+    state.currentLesson = '';
+    state.currentCategory = category;
+    state.isReviewing = false;
+
+    switchView('quiz');
+
+    state.questions = [];
+    state.currentIndex = 0;
+    state.combo = 0;
+    state.maxCombo = 0;
+    state.score = 0;
+    state.correctCount = 0;
+    state.wrongCount = 0;
+    state.totalScoreAdd = 0;
+
+    document.getElementById('quizSideLeft').innerHTML = '';
+    document.getElementById('quizSideRight').innerHTML = '';
+
+    try {
+        const res = await fetch(window.API_ROUTES.quiz, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode: state.mode, lesson: '', category: category })
+        });
+        const data = await res.json();
+        if (data.error) { showToast(data.error, 'error'); goHome(); return; }
+        if (!data.data || data.data.length === 0) {
+            showToast('该分类没有单词', 'error');
+            goHome();
+            return;
+        }
+        state.questions = data.data;
+        showQuestion();
+    } catch (e) { showToast('加载题目失败', 'error'); goHome(); }
+}
+
 // ========== 课程网格 ==========
 async function loadLessonGrid() {
     try {
@@ -426,7 +496,7 @@ async function startQuiz(lesson) {
         const res = await fetch(window.API_ROUTES.quiz, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mode: state.mode, lesson: lesson })
+            body: JSON.stringify({ mode: state.mode, lesson: lesson, category: '' })
         });
         const data = await res.json();
         if (data.error) { showToast(data.error, 'error'); goHome(); return; }
@@ -705,7 +775,11 @@ function startConfetti() {
 }
 
 function retryLesson() {
-    startQuiz(state.currentLesson);
+    if (state.currentCategory) {
+        startQuizByCategory(state.currentCategory);
+    } else {
+        startQuiz(state.currentLesson);
+    }
 }
 
 // ========== 更新顶部栏 ==========

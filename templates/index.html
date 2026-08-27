@@ -21,7 +21,8 @@ window.API_ROUTES = {
     stats: "{{ url_for('get_stats') }}",
     errorWords: "{{ url_for('get_error_words') }}",
     clearErrors: "{{ url_for('clear_error_words') }}",
-    resetProgress: "{{ url_for('reset_progress') }}"
+    resetProgress: "{{ url_for('reset_progress') }}",
+    categories: "{{ url_for('get_categories') }}"
 };
 </script>
 
@@ -74,12 +75,18 @@ window.API_ROUTES = {
         <!-- ===== 首页：模式&课程选择 ===== -->
         <div class="view" id="view-home">
             <div class="ppt-card home-card">
-                <div class="mode-row">
-                    <button class="mode-btn active" data-mode="en2cn" onclick="selectModeBtn(this)">🇬🇧→🇨🇳 英译汉</button>
-                    <button class="mode-btn" data-mode="cn2en" onclick="selectModeBtn(this)">🇨🇳→🇬🇧 汉译英</button>
-                    <button class="mode-btn" data-mode="cloze" onclick="selectModeBtn(this)">🔤 单词补全</button>
-                </div>
+            <div class="mode-row">
+                <button class="mode-btn active" data-mode="en2cn" onclick="selectModeBtn(this)">🇬🇧→🇨🇳 英译汉</button>
+                <button class="mode-btn" data-mode="cn2en" onclick="selectModeBtn(this)">🇨🇳→🇬🇧 汉译英</button>
+                <button class="mode-btn" data-mode="cloze" onclick="selectModeBtn(this)">🔤 单词补全</button>
+            </div>
 
+            <div class="home-tabs">
+                <button class="home-tab active" data-tab="lesson" onclick="switchHomeTab('lesson')">📚 按课程</button>
+                <button class="home-tab" data-tab="category" onclick="switchHomeTab('category')">🗂️ 按分类</button>
+            </div>
+
+            <div id="lessonGridWrap">
                 <div class="lesson-grid" id="lessonGrid">
                     <!-- JS动态生成 -->
                 </div>
@@ -87,6 +94,13 @@ window.API_ROUTES = {
                 <button class="btn-start" id="btnStartAll" onclick="startQuiz('')">
                     🚀 随机全部
                 </button>
+            </div>
+
+            <div id="categoryGridWrap" style="display:none">
+                <div class="category-grid" id="categoryGrid">
+                    <!-- JS动态生成 -->
+                </div>
+            </div>
             </div>
         </div>
 
