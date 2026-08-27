@@ -170,9 +170,9 @@ def set_default_wordset():
     data = request.json or {}
     ws = data.get('word_set', '')
     session['word_set'] = ws
+    db = get_db()
     with db.cursor() as cursor:
         cursor.execute("UPDATE users SET default_word_set = %s WHERE id = %s", (ws, user['id']))
-    db = get_db()
     db.commit()
     return jsonify({'success': True})
 

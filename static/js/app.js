@@ -397,9 +397,17 @@ async function loadWordsets() {
         sel.innerHTML = state.wordSets.map(s =>
             `<option value="${s.word_set}" ${state.wordSet === s.word_set ? 'selected' : ''}>${s.word_set} (${s.cnt})</option>`
         ).join('');
-        // 如果当前未选，取第一个
+        // 如果当前未选，取第一个并保存到数据库
         if (!state.wordSet && state.wordSets.length > 0) {
             state.wordSet = state.wordSets[0].word_set;
+            // 异步保存默认单词集到数据库
+            try {
+                await fetch(window.API_ROUTES.setDefaultWordset, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ word_set: state.wordSet })
+                });
+            } catch (e) { /* ignore */ }
         }
     } catch (e) { console.error('loadWordsets error:', e); }
 }

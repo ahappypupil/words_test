@@ -147,2296 +147,2296 @@
     "category": "身体部位"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "worm",
     "chinese": "虫子",
     "phonetic": "wɜːm",
     "category": "动物"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "berries",
     "chinese": "浆果",
     "phonetic": "ˈberiz",
     "category": "食物"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "hunt",
     "chinese": "捕猎",
     "phonetic": "hʌnt",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "escape",
     "chinese": "逃跑",
     "phonetic": "ɪˈskeɪp",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "creep",
     "chinese": "悄悄爬行",
     "phonetic": "kriːp",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "fight",
     "chinese": "打斗",
     "phonetic": "faɪt",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "peck",
     "chinese": "啄",
     "phonetic": "pek",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "pinecone",
     "chinese": "松果",
     "phonetic": "ˈpaɪnkəʊn",
     "category": "自然物体"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "squawk",
     "chinese": "尖叫",
     "phonetic": "skwɔːk",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "strong",
     "chinese": "强壮的",
     "phonetic": "strɒŋ",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "gentle",
     "chinese": "温和的",
     "phonetic": "ˈdʒentl",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "patient",
     "chinese": "有耐心的",
     "phonetic": "ˈpeɪʃnt",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "smart",
     "chinese": "聪明的",
     "phonetic": "smɑːt",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "calm",
     "chinese": "冷静的",
     "phonetic": "kɑːm",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "fierce",
     "chinese": "凶猛的",
     "phonetic": "fɪəs",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "brave",
     "chinese": "勇敢的",
     "phonetic": "breɪv",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 2,
     "word": "adventure",
     "chinese": "冒险",
     "phonetic": "əˈdentʃə(r)",
     "category": "故事主题"
   },
   {
-    "lesson": 1,
+    "lesson": 3,
     "word": "flow",
     "chinese": "流动",
     "phonetic": "fləʊ",
     "category": "物质状态"
   },
   {
-    "lesson": 1,
+    "lesson": 3,
     "word": "solid",
     "chinese": "固体",
     "phonetic": "ˈsɒlɪd",
     "category": "物质状态"
   },
   {
-    "lesson": 1,
+    "lesson": 3,
     "word": "liquid",
     "chinese": "液体",
     "phonetic": "ˈlɪkwɪd",
     "category": "物质状态"
   },
   {
-    "lesson": 1,
+    "lesson": 3,
     "word": "gas",
     "chinese": "气体",
     "phonetic": "ɡæs",
     "category": "物质状态"
   },
   {
-    "lesson": 1,
+    "lesson": 3,
     "word": "heat",
     "chinese": "热/加热",
     "phonetic": "hiːt",
     "category": "物质变化"
   },
   {
-    "lesson": 1,
+    "lesson": 3,
     "word": "steam",
     "chinese": "蒸汽",
     "phonetic": "stiːm",
     "category": "物质状态"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "freeze",
     "chinese": "结冰",
     "phonetic": "friːz",
     "category": "物质变化"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "melt",
     "chinese": "融化",
     "phonetic": "melt",
     "category": "物质变化"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "icicle",
     "chinese": "冰柱",
     "phonetic": "ˈaɪsɪkl",
     "category": "自然现象"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "balloon",
     "chinese": "气球",
     "phonetic": "bəˈluːn",
     "category": "日常物品"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "candle",
     "chinese": "蜡烛",
     "phonetic": "ˈkændl",
     "category": "日常物品"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "ice pop",
     "chinese": "冰棍",
     "phonetic": "aɪs pɒp",
     "category": "食物"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "kettle",
     "chinese": "水壶",
     "phonetic": "ˈketl",
     "category": "厨房用品"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "popcorn",
     "chinese": "爆米花",
     "phonetic": "ˈpɒpkɔːn",
     "category": "食物"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "container",
     "chinese": "容器",
     "phonetic": "kənˈteɪnə(r)",
     "category": "日常物品"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "drip",
     "chinese": "滴",
     "phonetic": "drɪp",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "hard",
     "chinese": "硬的",
     "phonetic": "hɑːd",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "shape",
     "chinese": "形状",
     "phonetic": "ʃeɪp",
     "category": "几何概念"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "thick",
     "chinese": "厚的",
     "phonetic": "θɪk",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "thin",
     "chinese": "薄的",
     "phonetic": "θɪn",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "state",
     "chinese": "状态",
     "phonetic": "steɪt",
     "category": "科学概念"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "cream",
     "chinese": "奶油",
     "phonetic": "kriːm",
     "category": "食物"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "sugar",
     "chinese": "糖",
     "phonetic": "ˈʃʊɡə(r)",
     "category": "食物"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "pour",
     "chinese": "倒/倾倒",
     "phonetic": "pɔː(r)",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "plastic bags",
     "chinese": "塑料袋",
     "phonetic": "ˈplæstɪk bæɡz",
     "category": "日常物品"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "mixture",
     "chinese": "混合物",
     "phonetic": "ˈmɪkstʃə(r)",
     "category": "科学概念"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "open",
     "chinese": "打开的",
     "phonetic": "ˈəʊpən",
     "category": "状态形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "closed",
     "chinese": "关闭的",
     "phonetic": "kləʊzd",
     "category": "状态形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "freezer",
     "chinese": "冰箱冷冻室",
     "phonetic": "ˈfriːzə(r)",
     "category": "家电"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "coffee",
     "chinese": "咖啡",
     "phonetic": "ˈkɒfi",
     "category": "食物饮品"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "fruit",
     "chinese": "水果",
     "phonetic": "fruːt",
     "category": "食物"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "pasta",
     "chinese": "意大利面",
     "phonetic": "ˈpæstə",
     "category": "食物"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "salad",
     "chinese": "沙拉",
     "phonetic": "ˈsæləd",
     "category": "食物"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "tea",
     "chinese": "茶",
     "phonetic": "tiː",
     "category": "食物饮品"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "vegetables",
     "chinese": "蔬菜",
     "phonetic": "ˈvedʒtəblz",
     "category": "食物"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "great",
     "chinese": "很棒的",
     "phonetic": "ɡreɪt",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "ice cube",
     "chinese": "冰块",
     "phonetic": "aɪs kjuːb",
     "category": "日常物品"
   },
   {
-    "lesson": 1,
+    "lesson": 4,
     "word": "vanilla",
     "chinese": "香草",
     "phonetic": "vəˈnɪlə",
     "category": "食物调味"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "travel",
     "chinese": "旅行",
     "phonetic": "ˈtrævl",
     "category": "出行"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "communication",
     "chinese": "交流/通讯",
     "phonetic": "kəˌmjuːnɪˈkeɪʃn",
     "category": "通讯"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "airplane",
     "chinese": "飞机",
     "phonetic": "ˈeəpleɪn",
     "category": "交通工具"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "news",
     "chinese": "新闻",
     "phonetic": "njuːz",
     "category": "媒体"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "letter",
     "chinese": "信",
     "phonetic": "ˈletə(r)",
     "category": "通讯方式"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "text message",
     "chinese": "短信",
     "phonetic": "tek ˈmesɪdʒ",
     "category": "通讯方式"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "e-mail",
     "chinese": "电子邮件",
     "phonetic": "ˈiː meɪl",
     "category": "通讯方式"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "radio",
     "chinese": "收音机",
     "phonetic": "ˈreɪdiəʊ",
     "category": "媒体"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "Internet",
     "chinese": "互联网",
     "phonetic": "ˈɪntənet",
     "category": "科技"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "boat",
     "chinese": "船",
     "phonetic": "bəʊt",
     "category": "交通工具"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "bus",
     "chinese": "公交车",
     "phonetic": "bʌs",
     "category": "交通工具"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "cable car",
     "chinese": "缆车",
     "phonetic": "ˈkeɪbl kɑː(r)",
     "category": "交通工具"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "horse",
     "chinese": "马",
     "phonetic": "hɔːs",
     "category": "交通工具"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "motorcycle",
     "chinese": "摩托车",
     "phonetic": "ˈməʊtəsaɪkl",
     "category": "交通工具"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "truck",
     "chinese": "卡车",
     "phonetic": "trʌk",
     "category": "交通工具"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "carry",
     "chinese": "搬运/携带",
     "phonetic": "ˈkæri",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "deliver",
     "chinese": "递送",
     "phonetic": "dɪˈlɪvə(r)",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "difficult",
     "chinese": "困难的",
     "phonetic": "ˈdɪfɪkəlt",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "listen",
     "chinese": "听",
     "phonetic": "ˈlɪsn",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "mail",
     "chinese": "邮件",
     "phonetic": "meɪl",
     "category": "通讯方式"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "nearby",
     "chinese": "附近的",
     "phonetic": "ˌnɪˈbaɪ",
     "category": "位置方位"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "print",
     "chinese": "打印",
     "phonetic": "prɪnt",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "ship",
     "chinese": "船运/运送",
     "phonetic": "ʃɪp",
     "category": "交通工具"
   },
   {
-    "lesson": 1,
+    "lesson": 5,
     "word": "start",
     "chinese": "开始",
     "phonetic": "stɑːt",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "arrive",
     "chinese": "到达",
     "phonetic": "əˈraɪv",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "ask",
     "chinese": "问",
     "phonetic": "ɑːsk",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "check",
     "chinese": "检查",
     "phonetic": "tʃek",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "enter",
     "chinese": "进入",
     "phonetic": "ˈentə(r)",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "poor",
     "chinese": "贫穷的",
     "phonetic": "pɔː(r)",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "crowded",
     "chinese": "拥挤的",
     "phonetic": "ˈkraʊdɪd",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "clerk",
     "chinese": "店员/职员",
     "phonetic": "klɜːk",
     "category": "职业人物"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "visit",
     "chinese": "拜访/参观",
     "phonetic": "ˈvɪzɪt",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "sick",
     "chinese": "生病的",
     "phonetic": "sɪk",
     "category": "健康状态"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "bathtub",
     "chinese": "浴缸",
     "phonetic": "ˈbθʌtʌb",
     "category": "家居用品"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "chair",
     "chinese": "椅子",
     "phonetic": "tʃeə(r)",
     "category": "家具"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "clock",
     "chinese": "时钟",
     "phonetic": "klɒk",
     "category": "家居用品"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "couch",
     "chinese": "沙发",
     "phonetic": "kaʊtʃ",
     "category": "家具"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "lamp",
     "chinese": "灯",
     "phonetic": "læmp",
     "category": "家居用品"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "sink (n)",
     "chinese": "水槽",
     "phonetic": "sɪŋk",
     "category": "厨房卫浴"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "happen",
     "chinese": "发生",
     "phonetic": "ˈhæpən",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "healthy",
     "chinese": "健康的",
     "phonetic": "ˈhelθi",
     "category": "健康状态"
   },
   {
-    "lesson": 1,
+    "lesson": 6,
     "word": "question",
     "chinese": "问题",
     "phonetic": "ˈkwestʃən",
     "category": "通用词汇"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "minus sign",
     "chinese": "减号",
     "phonetic": "ˈmaɪnəs saɪn",
     "category": "数学符号"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "subtraction",
     "chinese": "减法",
     "phonetic": "səbˈtrækʃn",
     "category": "数学运算"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "take away",
     "chinese": "减去",
     "phonetic": "teɪk əˈweɪ",
     "category": "数学运算"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "column",
     "chinese": "列",
     "phonetic": "ˈkɒləm",
     "category": "数学术语"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "row",
     "chinese": "行",
     "phonetic": "rəʊ",
     "category": "数学术语"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "test score",
     "chinese": "考试分数",
     "phonetic": "test skɔː(r)",
     "category": "学校相关"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "left",
     "chinese": "左边/剩余的",
     "phonetic": "left",
     "category": "位置方位"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "clean",
     "chinese": "干净的/清洁",
     "phonetic": "kliːn",
     "category": "状态形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "dirty",
     "chinese": "脏的",
     "phonetic": "ˈdɜːti",
     "category": "状态形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "full",
     "chinese": "满的/饱的",
     "phonetic": "fʊl",
     "category": "状态形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "hungry",
     "chinese": "饿的",
     "phonetic": "ˈhʌŋɡri",
     "category": "身体感觉"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "thirsty",
     "chinese": "渴的",
     "phonetic": "ˈθɜːsti",
     "category": "身体感觉"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "tired",
     "chinese": "累的",
     "phonetic": "ˈtaɪəd",
     "category": "身体感觉"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "double-digit number",
     "chinese": "两位数",
     "phonetic": "ˌdʌbl ˈdɪdʒɪt ˈnʌmbə(r)",
     "category": "数学术语"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "single-digit number",
     "chinese": "一位数",
     "phonetic": "ˌsɪŋgl ˈdɪdʒɪt ˈnʌmbə(r)",
     "category": "数学术语"
   },
   {
-    "lesson": 1,
+    "lesson": 7,
     "word": "backward",
     "chinese": "向后的",
     "phonetic": "ˈbækwəd",
     "category": "方向方位"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "steal",
     "chinese": "偷",
     "phonetic": "stiːl",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "dig up",
     "chinese": "挖出",
     "phonetic": "dɪɡ ʌp",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "hide",
     "chinese": "藏",
     "phonetic": "haɪd",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "jar",
     "chinese": "罐子",
     "phonetic": "dʒɑː(r)",
     "category": "容器"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "greedy",
     "chinese": "贪婪的",
     "phonetic": "ˈɡriːdi",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "baker",
     "chinese": "面包师",
     "phonetic": "ˈbeɪkə(r)",
     "category": "职业人物"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "cook",
     "chinese": "厨师/烹饪",
     "phonetic": "kʊk",
     "category": "职业人物"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "arm",
     "chinese": "手臂",
     "phonetic": "ɑːm",
     "category": "身体部位"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "face (n)",
     "chinese": "脸",
     "phonetic": "feɪs",
     "category": "身体部位"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "foot",
     "chinese": "脚",
     "phonetic": "fʊt",
     "category": "身体部位"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "hand",
     "chinese": "手",
     "phonetic": "hænd",
     "category": "身体部位"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "knee",
     "chinese": "膝盖",
     "phonetic": "niː",
     "category": "身体部位"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "nose",
     "chinese": "鼻子",
     "phonetic": "nəʊz",
     "category": "身体部位"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "bored",
     "chinese": "无聊的",
     "phonetic": "ˈbɔːd",
     "category": "情绪形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "let go",
     "chinese": "放手",
     "phonetic": "let ɡəʊ",
     "category": "短语动词"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "decide",
     "chinese": "决定",
     "phonetic": "dɪˈsaɪd",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 8,
     "word": "garden",
     "chinese": "花园",
     "phonetic": "ˈɡɑːdn",
     "category": "场所地点"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "traffic light",
     "chinese": "交通灯",
     "phonetic": "ˈtræfɪk laɪt",
     "category": "交通规则"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "take turns",
     "chinese": "轮流",
     "phonetic": "teɪk tɜːnz",
     "category": "社交礼仪"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "polite",
     "chinese": "有礼貌的",
     "phonetic": "pəˈlaɪt",
     "category": "社交礼仪"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "clean up",
     "chinese": "打扫",
     "phonetic": "kliːn ʌp",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "litter",
     "chinese": "垃圾",
     "phonetic": "ˈlɪtə(r)",
     "category": "环境相关"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "librarian",
     "chinese": "图书管理员",
     "phonetic": "laɪˈbreəriən",
     "category": "职业人物"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "crossing guard",
     "chinese": "交通协管员",
     "phonetic": "ˈkrɒsɪŋ ɡɑːd",
     "category": "职业人物"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "principal",
     "chinese": "校长",
     "phonetic": "ˈprɪnsəpl",
     "category": "职业人物"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "lifeguard",
     "chinese": "救生员",
     "phonetic": "ˈlaɪfɪɡɑːd",
     "category": "职业人物"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "cafeteria",
     "chinese": "食堂",
     "phonetic": "ˌkæfəˈtɪəriə",
     "category": "场所地点"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "classroom",
     "chinese": "教室",
     "phonetic": "ˈklɑːsruːm",
     "category": "场所地点"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "crosswalk",
     "chinese": "人行横道",
     "phonetic": "ˈkrɒswɔːk",
     "category": "交通规则"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "kitchen",
     "chinese": "厨房",
     "phonetic": "ˈkɪtʃɪn",
     "category": "场所地点"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "living room",
     "chinese": "客厅",
     "phonetic": "ˈlɪvɪŋ ruːm",
     "category": "场所地点"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "swimming pool",
     "chinese": "游泳池",
     "phonetic": "ˈswɪmɪŋ puːl",
     "category": "运动场所"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "attention",
     "chinese": "注意",
     "phonetic": "əˈtenʃn",
     "category": "行为习惯"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "bedtime",
     "chinese": "就寝时间",
     "phonetic": "ˈbedtaɪm",
     "category": "时间相关"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "follow",
     "chinese": "跟随/遵守",
     "phonetic": "ˈfɒləʊ",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "unhealthy",
     "chinese": "不健康的",
     "phonetic": "ʌnˈhelθi",
     "category": "健康状态"
   },
   {
-    "lesson": 1,
+    "lesson": 9,
     "word": "wash",
     "chinese": "洗",
     "phonetic": "wɒʃ",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "camera",
     "chinese": "相机",
     "phonetic": "ˈkæmərə",
     "category": "电子设备"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "cell phone",
     "chinese": "手机",
     "phonetic": "sel fəʊn",
     "category": "电子设备"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "computer",
     "chinese": "电脑",
     "phonetic": "kəmˈpjuːtə(r)",
     "category": "电子设备"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "headphones",
     "chinese": "耳机",
     "phonetic": "ˈhedfəʊnz",
     "category": "电子设备"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "laptop",
     "chinese": "笔记本电脑",
     "phonetic": "ˈlæptɒp",
     "category": "电子设备"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "tablet",
     "chinese": "平板电脑",
     "phonetic": "ˈtæblɪt",
     "category": "电子设备"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "grab",
     "chinese": "抓取",
     "phonetic": "ɡræb",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "invite",
     "chinese": "邀请",
     "phonetic": "ɪnˈvaɪt",
     "category": "社交动词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "knock",
     "chinese": "敲",
     "phonetic": "nɒk",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "pass",
     "chinese": "传递",
     "phonetic": "pɑːs",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "put away",
     "chinese": "收起来",
     "phonetic": "pʊt əˈweɪ",
     "category": "短语动词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "rude",
     "chinese": "粗鲁的",
     "phonetic": "ruːd",
     "category": "社交礼仪"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "share",
     "chinese": "分享",
     "phonetic": "ʃeə(r)",
     "category": "社交动词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "thoughtful",
     "chinese": "体贴的",
     "phonetic": "ˈθɔːtfl",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "anxious",
     "chinese": "焦虑的",
     "phonetic": "æŋˈʃəs",
     "category": "情绪形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "careful",
     "chinese": "小心的",
     "phonetic": "ˈkeəfl",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "joke",
     "chinese": "玩笑",
     "phonetic": "dʒəʊk",
     "category": "社交用语"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "reach",
     "chinese": "到达/伸手",
     "phonetic": "riːtʃ",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "upset",
     "chinese": "难过的/心烦的",
     "phonetic": "ʌpˈset",
     "category": "情绪形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "weep",
     "chinese": "哭泣",
     "phonetic": "wiːp",
     "category": "情绪动词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "wrap",
     "chinese": "包裹/包装",
     "phonetic": "ræp",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 10,
     "word": "host",
     "chinese": "主人/主持",
     "phonetic": "həʊst",
     "category": "角色名词"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "camp (v)",
     "chinese": "露营",
     "phonetic": "kæmp",
     "category": "户外活动"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "hike",
     "chinese": "徒步旅行",
     "phonetic": "haɪk",
     "category": "户外活动"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "ride a horse",
     "chinese": "骑马",
     "phonetic": "raɪd ə hɔːs",
     "category": "户外活动"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "ski (v)",
     "chinese": "滑雪",
     "phonetic": "skiː",
     "category": "户外活动"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "surf",
     "chinese": "冲浪",
     "phonetic": "sɜːf",
     "category": "水上运动"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "fish (v)",
     "chinese": "钓鱼",
     "phonetic": "fɪʃ",
     "category": "户外活动"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "land",
     "chinese": "陆地/登陆",
     "phonetic": "lænd",
     "category": "地理环境"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "landfill",
     "chinese": "垃圾填埋场",
     "phonetic": "ˈlændfɪl",
     "category": "环境设施"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "reduce",
     "chinese": "减少",
     "phonetic": "rɪˈdjuːs",
     "category": "环保行动"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "resources",
     "chinese": "资源",
     "phonetic": "rɪˈsɔːsɪz",
     "category": "环保概念"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "reuse",
     "chinese": "再利用",
     "phonetic": "ˌriːˈjuːz",
     "category": "环保行动"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "smoke",
     "chinese": "烟/吸烟",
     "phonetic": "sməʊk",
     "category": "环境污染"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "sunlight",
     "chinese": "阳光",
     "phonetic": "ˈsʌnlaɪt",
     "category": "自然元素"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "trash",
     "chinese": "垃圾",
     "phonetic": "træʃ",
     "category": "废弃物"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "wood",
     "chinese": "木头/木材",
     "phonetic": "wʊd",
     "category": "自然资源"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "bottom",
     "chinese": "底部",
     "phonetic": "ˈbɒtəm",
     "category": "位置方位"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "factory",
     "chinese": "工厂",
     "phonetic": "ˈfæktri",
     "category": "工业建筑"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "forever",
     "chinese": "永远",
     "phonetic": "fərˈevə(r)",
     "category": "时间副词"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "furniture",
     "chinese": "家具",
     "phonetic": "ˈfɜːnɪtʃə(r)",
     "category": "家居用品"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "important",
     "chinese": "重要的",
     "phonetic": "ɪmˈpɔːtnt",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 11,
     "word": "special",
     "chinese": "特别的",
     "phonetic": "ˈspeʃl",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "o'clock",
     "chinese": "……点钟",
     "phonetic": "əˈklɒk",
     "category": "时间表达"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "time",
     "chinese": "时间",
     "phonetic": "taɪm",
     "category": "时间概念"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "week",
     "chinese": "周/星期",
     "phonetic": "wiːk",
     "category": "时间单位"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "blow",
     "chinese": "吹/吹气",
     "phonetic": "bləʊ",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "carton",
     "chinese": "纸盒/硬纸盒",
     "phonetic": "kɑːˈtɒn",
     "category": "包装材料"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "diary",
     "chinese": "日记",
     "phonetic": "ˈdaɪəri",
     "category": "文具书籍"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "machine",
     "chinese": "机器",
     "phonetic": "məˈʃiːn",
     "category": "机械设备"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "paper",
     "chinese": "纸张",
     "phonetic": "ˈpeɪpə(r)",
     "category": "材料"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "recycling plant",
     "chinese": "回收厂",
     "phonetic": "ˌriːˈsaɪklɪŋ plɑːnt",
     "category": "环保设施"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "rescue",
     "chinese": "救援",
     "phonetic": "ˈreskjuː",
     "category": "救援行动"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "shelf",
     "chinese": "架子/书架",
     "phonetic": "ʃelf",
     "category": "家具"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "stationery store",
     "chinese": "文具店",
     "phonetic": "ˈsteɪʃənəri stɔː(r)",
     "category": "商店场所"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "busy",
     "chinese": "忙碌的",
     "phonetic": "ˈbɪzi",
     "category": "状态形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "choose",
     "chinese": "选择",
     "phonetic": "tʃuːz",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 12,
     "word": "picnic",
     "chinese": "野餐",
     "phonetic": "ˈpɪknɪk",
     "category": "休闲活动"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "cry",
     "chinese": "哭",
     "phonetic": "kraɪ",
     "category": "情绪动词"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "nervous",
     "chinese": "紧张的",
     "phonetic": "ˈnɜːvəs",
     "category": "情绪形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "proud",
     "chinese": "自豪的",
     "phonetic": "praʊd",
     "category": "情绪形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "yawn",
     "chinese": "打哈欠",
     "phonetic": "jɔːn",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "smile",
     "chinese": "微笑",
     "phonetic": "smaɪl",
     "category": "表情动作"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "unhappy",
     "chinese": "不高兴的",
     "phonetic": "ʌnˈhæpi",
     "category": "情绪形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "excited",
     "chinese": "兴奋的",
     "phonetic": "ɪkˈsaɪtɪd",
     "category": "情绪形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "feelings",
     "chinese": "感觉/情感",
     "phonetic": "ˈfiːlɪŋz",
     "category": "心理概念"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "high",
     "chinese": "高的/高音",
     "phonetic": "haɪ",
     "category": "音乐术语"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "low",
     "chinese": "低的/低音",
     "phonetic": "ləʊ",
     "category": "音乐术语"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "right",
     "chinese": "正确的/右边",
     "phonetic": "raɪt",
     "category": "方向方位"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "sleepy",
     "chinese": "困倦的",
     "phonetic": "ˈsliːpi",
     "category": "身体状态"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "trumpet",
     "chinese": "小号（铜管乐器）",
     "phonetic": "ˈtrʌmpɪt",
     "category": "乐器"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "wolf",
     "chinese": "狼",
     "phonetic": "wʊlf",
     "category": "动物"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "wrong",
     "chinese": "错误的",
     "phonetic": "rɒŋ",
     "category": "评价形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "flute",
     "chinese": "长笛（木管乐器）",
     "phonetic": "fluːt",
     "category": "乐器"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "imagine",
     "chinese": "想象",
     "phonetic": "ɪˈmædʒɪn",
     "category": "思维动词"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "remember",
     "chinese": "记住",
     "phonetic": "rɪˈmembə(r)",
     "category": "认知动词"
   },
   {
-    "lesson": 1,
+    "lesson": 13,
     "word": "thunder",
     "chinese": "雷声/打雷",
     "phonetic": "ˈθʌndə(r)",
     "category": "自然现象"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "do an interview",
     "chinese": "采访",
     "phonetic": "duː ən ˈɪntəvjuː",
     "category": "表演活动"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "give a concert",
     "chinese": "举办音乐会",
     "phonetic": "ɡɪv ə ˈkɒnsət",
     "category": "表演活动"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "have lunch",
     "chinese": "吃午餐",
     "phonetic": "hæv lʌntʃ",
     "category": "日常活动"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "make a mistake",
     "chinese": "犯错误",
     "phonetic": "meɪk ə mɪˈsteɪk",
     "category": "日常活动"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "sign an autograph",
     "chinese": "签名",
     "phonetic": "saɪn ˈɔːtəɡrɑːf",
     "category": "明星互动"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "talk to fans",
     "chinese": "与粉丝交谈",
     "phonetic": "tɔːk tuː fænz",
     "category": "明星互动"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "(the) flu",
     "chinese": "流感",
     "phonetic": "fluː",
     "category": "疾病"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "hummingbird",
     "chinese": "蜂鸟",
     "phonetic": "ˈhʌmɪŋbɜːd",
     "category": "动物"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "musician",
     "chinese": "音乐家",
     "phonetic": "mjuˈzɪʃn",
     "category": "职业人物"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "notes",
     "chinese": "音符/笔记",
     "phonetic": "nəʊts",
     "category": "音乐术语"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "record",
     "chinese": "记录/唱片",
     "phonetic": "rɪˈkɔːd",
     "category": "音乐制作"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "solo (n)",
     "chinese": "独奏/单独的",
     "phonetic": "ˈsəʊləʊ",
     "category": "音乐形式"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "tears (n)",
     "chinese": "眼泪",
     "phonetic": "tɪəz",
     "category": "身体部位"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "wait",
     "chinese": "等待",
     "phonetic": "weɪt",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "worried",
     "chinese": "担心的",
     "phonetic": "ˈwʌrid",
     "category": "情绪形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "dreamy",
     "chinese": "梦幻的/爱做梦的",
     "phonetic": "ˈdriːmi",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "enjoy",
     "chinese": "享受",
     "phonetic": "ɪnˈdʒɔɪ",
     "category": "情感动词"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "laugh",
     "chinese": "大笑",
     "phonetic": "lɑːf",
     "category": "表情动作"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "popular",
     "chinese": "受欢迎的",
     "phonetic": "ˈpɒpjələ(r)",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "snowflake",
     "chinese": "雪花",
     "phonetic": "ˈsnəʊfleɪk",
     "category": "自然现象"
   },
   {
-    "lesson": 1,
+    "lesson": 14,
     "word": "tune",
     "chinese": "曲调/曲子",
     "phonetic": "tjuːn",
     "category": "音乐术语"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "broom",
     "chinese": "扫帚",
     "phonetic": "bruːm",
     "category": "清洁工具"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "computer mouse",
     "chinese": "鼠标（电脑）",
     "phonetic": "kəmˈpjuːt maʊs",
     "category": "电子配件"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "desk drawer",
     "chinese": "抽屉",
     "phonetic": "desk drɔː(r)",
     "category": "家具部件"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "door",
     "chinese": "门",
     "phonetic": "dɔː(r)",
     "category": "建筑构件"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "stapler",
     "chinese": "订书机",
     "phonetic": "ˈsteɪplə(r)",
     "category": "办公用品"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "suitcase",
     "chinese": "行李箱/手提箱",
     "phonetic": "ˈsuːtkeɪs",
     "category": "旅行用品"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "easy",
     "chinese": "容易的",
     "phonetic": "ˈiːzi",
     "category": "描述形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "ground",
     "chinese": "地面",
     "phonetic": "ɡraʊnd",
     "category": "地理环境"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "heavy",
     "chinese": "重的",
     "phonetic": "ˈhevi",
     "category": "物理属性"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "light",
     "chinese": "轻的",
     "phonetic": "laɪt",
     "category": "物理属性"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "movement",
     "chinese": "运动/移动",
     "phonetic": "ˈmuːvmənt",
     "category": "物理概念"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "pull",
     "chinese": "拉",
     "phonetic": "pʊl",
     "category": "力的作用"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "push",
     "chinese": "推",
     "phonetic": "pʊʃ",
     "category": "力的作用"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "speed",
     "chinese": "速度",
     "phonetic": "spiːd",
     "category": "物理量词"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "throw",
     "chinese": "扔/投掷",
     "phonetic": "θrəʊ",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "force",
     "chinese": "力",
     "phonetic": "fɔːs",
     "category": "物理概念"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "narrow",
     "chinese": "窄的",
     "phonetic": "ˈnærəʊ",
     "category": "空间描述"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "patch",
     "chinese": "补丁/小块地",
     "phonetic": "pætʃ",
     "category": "地理环境"
   },
   {
-    "lesson": 1,
+    "lesson": 15,
     "word": "toward",
     "chinese": "朝向/向着",
     "phonetic": "təˈwɔːd",
     "category": "方向介词"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "stubborn",
     "chinese": "固执的",
     "phonetic": "ˈstʌbən",
     "category": "性格形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "baseball",
     "chinese": "棒球",
     "phonetic": "ˈbeɪsbɔːl",
     "category": "球类运动"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "basketball",
     "chinese": "篮球",
     "phonetic": "ˈbɑːskɪtbɔːl",
     "category": "球类运动"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "golf",
     "chinese": "高尔夫",
     "phonetic": "ɡɒlf",
     "category": "球类运动"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "hockey",
     "chinese": "曲棍球",
     "phonetic": "ˈhɒki",
     "category": "球类运动"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "soccer",
     "chinese": "足球",
     "phonetic": "ˈsɒkə(r)",
     "category": "球类运动"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "tennis",
     "chinese": "网球",
     "phonetic": "ˈtenɪs",
     "category": "球类运动"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "angry",
     "chinese": "生气的",
     "phonetic": "ˈæŋɡri",
     "category": "情绪形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "east",
     "chinese": "东方/东边",
     "phonetic": "iːst",
     "category": "方向方位"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "forward",
     "chinese": "向前方的/前锋",
     "phonetic": "ˈfɔːwəd",
     "category": "方向方位"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "goat",
     "chinese": "山羊",
     "phonetic": "ɡəʊt",
     "category": "动物"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "horns",
     "chinese": "角/犄角",
     "phonetic": "hɔːnz",
     "category": "动物部位"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "mountain",
     "chinese": "山",
     "phonetic": "ˈmaʊntɪn",
     "category": "地理环境"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "west",
     "chinese": "西方/西边",
     "phonetic": "west",
     "category": "方向方位"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "wet",
     "chinese": "湿的",
     "phonetic": "wet",
     "category": "物理属性"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "basket",
     "chinese": "篮筐",
     "phonetic": "ˈbɑːskɪt",
     "category": "体育器材"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "bridge",
     "chinese": "桥",
     "phonetic": "brɪdʒ",
     "category": "建筑结构"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "court",
     "chinese": "球场",
     "phonetic": "kɔːt",
     "category": "运动场地"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "goal",
     "chinese": "进球/目标",
     "phonetic": "ɡəʊl",
     "category": "体育术语"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "hoop",
     "chinese": "篮筐",
     "phonetic": "huːp",
     "category": "体育器材"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "puck",
     "chinese": "冰球",
     "phonetic": "pʌk",
     "category": "体育器材"
   },
   {
-    "lesson": 1,
+    "lesson": 16,
     "word": "riverbank",
     "chinese": "河岸",
     "phonetic": "ˈrɪvəbæŋk",
     "category": "地理环境"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "drawing",
     "chinese": "素描/画",
     "phonetic": "ˈdrɔːɪŋ",
     "category": "艺术形式"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "mobile",
     "chinese": "活动雕塑",
     "phonetic": "ˈməʊbaɪl",
     "category": "艺术形式"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "mosaic",
     "chinese": "马赛克画",
     "phonetic": "məʊˈzeɪk",
     "category": "艺术形式"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "oil painting",
     "chinese": "油画",
     "phonetic": "ɔɪl ˈpeɪntɪŋ",
     "category": "艺术形式"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "origami",
     "chinese": "折纸",
     "phonetic": "ˌɒrɪˈɑːmi",
     "category": "艺术形式"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "photograph",
     "chinese": "照片",
     "phonetic": "ˈfəʊtəɡrɑːf",
     "category": "艺术形式"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "collage",
     "chinese": "拼贴画",
     "phonetic": "ˈkɒlɑːʒ",
     "category": "艺术形式"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "crescent",
     "chinese": "新月形",
     "phonetic": "ˈkresnt",
     "category": "形状"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "nature",
     "chinese": "大自然",
     "phonetic": "ˈneɪtʃə(r)",
     "category": "自然概念"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "oval",
     "chinese": "椭圆形",
     "phonetic": "ˈəʊvl",
     "category": "形状"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "pattern",
     "chinese": "图案/花样",
     "phonetic": "ˈpætən",
     "category": "设计概念"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "sculpture",
     "chinese": "雕塑",
     "phonetic": "ˈskʌlptʃə(r)",
     "category": "艺术形式"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "spiral",
     "chinese": "螺旋形",
     "phonetic": "ˈspaɪrəl",
     "category": "形状"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "star",
     "chinese": "星形/星星",
     "phonetic": "stɑː(r)",
     "category": "形状"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "straight",
     "chinese": "笔直的",
     "phonetic": "streɪt",
     "category": "形状描述"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "corner",
     "chinese": "角/角落",
     "phonetic": "ˈkɔːnə(r)",
     "category": "形状"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "hang",
     "chinese": "悬挂",
     "phonetic": "hæŋ",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "length",
     "chinese": "长度",
     "phonetic": "leŋθ",
     "category": "度量衡"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "point",
     "chinese": "点/指向",
     "phonetic": "pɔɪnt",
     "category": "几何概念"
   },
   {
-    "lesson": 1,
+    "lesson": 17,
     "word": "speedboat",
     "chinese": "快艇",
     "phonetic": "ˈspiːdbəʊt",
     "category": "交通工具"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "chalk",
     "chinese": "粉笔",
     "phonetic": "tʃɔːk",
     "category": "美术工具"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "colored pencils",
     "chinese": "彩色铅笔",
     "phonetic": "ˈkʌləd ˈpenlz",
     "category": "美术工具"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "glue",
     "chinese": "胶水",
     "phonetic": "ɡluː",
     "category": "美术工具"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "markers",
     "chinese": "马克笔",
     "phonetic": "ˈmɑːkəz",
     "category": "美术工具"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "scissors",
     "chinese": "剪刀",
     "phonetic": "ˈsɪzəz",
     "category": "美术工具"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "watercolors",
     "chinese": "水彩颜料",
     "phonetic": "ˈwɔːtəkʌlz",
     "category": "美术材料"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "shiny",
     "chinese": "闪亮的",
     "phonetic": "ˈʃaɪni",
     "category": "视觉描述"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "fold",
     "chinese": "折叠",
     "phonetic": "fəʊld",
     "category": "折纸动作"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "edge",
     "chinese": "边缘",
     "phonetic": "edʒ",
     "category": "空间概念"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "crane",
     "chinese": "鹤（折纸作品）",
     "phonetic": "kreɪn",
     "category": "折纸作品"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "seal",
     "chinese": "海豹（折纸作品）",
     "phonetic": "siːl",
     "category": "折纸作品"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "crumple",
     "chinese": "揉皱",
     "phonetic": "ˈkrʌmpl",
     "category": "折纸动作"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "waves",
     "chinese": "波浪",
     "phonetic": "weɪvz",
     "category": "自然现象"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "climb",
     "chinese": "攀爬",
     "phonetic": "klaɪm",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "golden",
     "chinese": "金色的",
     "phonetic": "ˈɡəʊldən",
     "category": "颜色描述"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "awake",
     "chinese": "醒着的",
     "phonetic": "əˈweɪk",
     "category": "状态形容词"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "bend",
     "chinese": "弯曲",
     "phonetic": "bend",
     "category": "动作动词"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "dive",
     "chinese": "潜水",
     "phonetic": "daɪv",
     "category": "水上运动"
   },
   {
-    "lesson": 1,
+    "lesson": 18,
     "word": "voice",
     "chinese": "声音/嗓音",
     "phonetic": "vɔɪs",
