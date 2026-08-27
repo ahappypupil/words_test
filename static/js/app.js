@@ -620,9 +620,6 @@ function showQuestion() {
         document.getElementById('btnSpellSubmit').disabled = false;
         // 初始化虚拟键盘
         buildVkbd();
-        // 默认显示虚拟键盘
-        document.getElementById('vkbd').style.display = '';
-        document.getElementById('btnVkbdToggle').textContent = '⌨️';
     } else {
         // 选择题模式：显示选项
         grid.style.display = '';
@@ -879,18 +876,6 @@ function updateSpellHint() {
     // 如果有错误高亮则不清除
     if (!spellHint.dataset.error) {
         spellHint.textContent = display;
-    }
-}
-
-function toggleVkbd() {
-    const vkbd = document.getElementById('vkbd');
-    const btn = document.getElementById('btnVkbdToggle');
-    if (vkbd.style.display === 'none') {
-        vkbd.style.display = '';
-        btn.textContent = '⌨️';
-    } else {
-        vkbd.style.display = 'none';
-        btn.textContent = '⌨️';
     }
 }
 
