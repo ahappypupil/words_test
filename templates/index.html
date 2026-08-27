@@ -133,8 +133,16 @@ window.API_ROUTES = {
                             <div class="options-grid" id="optionsGrid"></div>
                             <div class="spell-area" id="spellArea" style="display:none">
                                 <div class="spell-hint" id="spellHint"></div>
-                                <input type="text" id="spellInput" class="spell-input" placeholder="输入英文单词..." autocomplete="off" autocapitalize="off" spellcheck="false">
+                                <div class="spell-input-row">
+                                    <input type="text" id="spellInput" class="spell-input" autocomplete="off" autocapitalize="off" spellcheck="false" readonly>
+                                    <button class="btn-vkbd-toggle" id="btnVkbdToggle" onclick="toggleVkbd()" title="虚拟键盘">⌨️</button>
+                                </div>
                                 <button class="btn-spell-submit" id="btnSpellSubmit" onclick="submitSpell()">确认</button>
+                                <div class="vkbd" id="vkbd" style="display:none">
+                                    <div class="vkbd-row" data-row="0"></div>
+                                    <div class="vkbd-row" data-row="1"></div>
+                                    <div class="vkbd-row" data-row="2"></div>
+                                </div>
                             </div>
                         </div>
                     </div>

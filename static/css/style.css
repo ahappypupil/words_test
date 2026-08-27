@@ -580,9 +580,15 @@ gap: 14px;
     font-family: 'Courier New', monospace;
     min-height: 36px;
 }
-.spell-input{
+.spell-input-row{
+    display: flex;
+    align-items: center;
+    gap: 10px;
     width: 100%;
-    max-width: 400px;
+    max-width: 460px;
+}
+.spell-input{
+    flex: 1;
     padding: 14px 20px;
     border: 3px solid #e5e7eb;
     border-radius: var(--radius-sm);
@@ -601,6 +607,27 @@ gap: 14px;
 }
 .spell-input:disabled{
     cursor: not-allowed;
+}
+.btn-vkbd-toggle{
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border: 3px solid #e5e7eb;
+    border-radius: var(--radius-sm);
+    background: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-vkbd-toggle:hover{
+    border-color: var(--primary);
+    background: #faf5ff;
+}
+.btn-vkbd-toggle:active{
+    transform: scale(0.95);
 }
 .btn-spell-submit{
     padding: 10px 40px;
@@ -624,6 +651,55 @@ gap: 14px;
 .btn-spell-submit:disabled{
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* ===== 虚拟键盘 ===== */
+.vkbd{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 4px;
+}
+.vkbd-row{
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+.vkbd-key{
+    min-width: 32px;
+    height: 44px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    flex: 1;
+    max-width: 48px;
+}
+.vkbd-key:hover{
+    background: #f5f3ff;
+    border-color: var(--primary);
+}
+.vkbd-key:active{
+    transform: scale(0.92);
+    background: var(--primary);
+    color: #fff;
+}
+.vkbd-key:disabled{
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.vkbd-key-del{
+    max-width: 72px;
+    background: #f9fafb;
+    font-size: 20px;
 }
 .option-btn{
     padding: 16px 20px;
@@ -1173,4 +1249,8 @@ gap: 14px;
     .quiz-side{ width: 80px; min-width: 60px; }
     .side-feedback-icon{ font-size: 36px; }
     .side-feedback-text{ font-size: 13px; padding: 4px 12px; }
+    .vkbd-key{ min-width: 28px; height: 40px; font-size: 15px; max-width: 40px; }
+    .vkbd-key-del{ max-width: 60px; }
+    .spell-input{ font-size: 18px; padding: 12px 14px; }
+    .btn-vkbd-toggle{ width: 44px; height: 44px; font-size: 20px; }
 }

@@ -331,7 +331,7 @@ document.addEventListener('keydown', (e) => {
         if (overlay && overlay.style.display !== 'none') {
             const regVisible = document.getElementById('registerForm').style.display !== 'none';
             if (regVisible) doRegister(); else doLogin();
-        } else if (state.mode === 'spell' && document.activeElement && document.activeElement.id === 'spellInput') {
+        } else if (state.mode === 'spell' && document.getElementById('view-quiz').style.display !== 'none') {
             submitSpell();
         }
     }
@@ -611,12 +611,18 @@ function showQuestion() {
         const spellHint = document.getElementById('spellHint');
         // 显示字母数提示（每个字母用 _ 表示）
         spellHint.textContent = `${'＿'.repeat(q.word_length || q.answer.length)}`;
+        spellHint.dataset.error = '';
         const input = document.getElementById('spellInput');
         input.value = '';
         input.disabled = false;
         input.style.borderColor = '';
-        input.focus();
+        input.style.backgroundColor = '';
         document.getElementById('btnSpellSubmit').disabled = false;
+        // 初始化虚拟键盘
+        buildVkbd();
+        // 默认显示虚拟键盘
+        document.getElementById('vkbd').style.display = '';
+        document.getElementById('btnVkbdToggle').textContent = '⌨️';
     } else {
         // 选择题模式：显示选项
         grid.style.display = '';
@@ -808,6 +814,86 @@ function retryLesson() {
 }
 
 // ========== 单词拼写模式 ==========
+
+// --- 虚拟键盘 ---
+const VKBD_LAYOUT = [
+    ['q','w','e','r','t','y','u','i','o','p'],
+    ['a','s','d','f','g','h','j','k','l'],
+    ['z','x','c','v','b','n','m']
+];
+
+function buildVkbd() {
+    VKBD_LAYOUT.forEach((row, i) => {
+        const rowEl = document.querySelector(`.vkbd-row[data-row="${i}"]`);
+        if (!rowEl) return;
+        rowEl.innerHTML = '';
+        row.forEach(ch => {
+            const key = document.createElement('button');
+            key.className = 'vkbd-key';
+            key.textContent = ch;
+            key.dataset.char = ch;
+            key.addEventListener('click', () => vkbdInput(ch));
+            rowEl.appendChild(key);
+        });
+    });
+    // 第三行末尾加退格键
+    const lastRow = document.querySelector('.vkbd-row[data-row="2"]');
+    if (lastRow && !lastRow.querySelector('.vkbd-key-del')) {
+        const del = document.createElement('button');
+        del.className = 'vkbd-key vkbd-key-del';
+        del.textContent = '⌫';
+        del.addEventListener('click', () => vkbdDelete());
+        lastRow.appendChild(del);
+    }
+}
+
+function vkbdInput(ch) {
+    const input = document.getElementById('spellInput');
+    if (input.disabled) return;
+    input.value += ch;
+    updateSpellHint();
+}
+
+function vkbdDelete() {
+    const input = document.getElementById('spellInput');
+    if (input.disabled) return;
+    input.value = input.value.slice(0, -1);
+    updateSpellHint();
+}
+
+function updateSpellHint() {
+    const q = state.questions[state.currentIndex];
+    if (!q) return;
+    const input = document.getElementById('spellInput');
+    const total = q.word_length || q.answer.length;
+    const typed = input.value;
+    let display = '';
+    for (let i = 0; i < total; i++) {
+        if (i < typed.length) {
+            display += typed[i].toUpperCase();
+        } else {
+            display += '＿';
+        }
+    }
+    const spellHint = document.getElementById('spellHint');
+    // 如果有错误高亮则不清除
+    if (!spellHint.dataset.error) {
+        spellHint.textContent = display;
+    }
+}
+
+function toggleVkbd() {
+    const vkbd = document.getElementById('vkbd');
+    const btn = document.getElementById('btnVkbdToggle');
+    if (vkbd.style.display === 'none') {
+        vkbd.style.display = '';
+        btn.textContent = '⌨️';
+    } else {
+        vkbd.style.display = 'none';
+        btn.textContent = '⌨️';
+    }
+}
+
 async function submitSpell() {
     const q = state.questions[state.currentIndex];
     const input = document.getElementById('spellInput');
@@ -824,6 +910,8 @@ async function submitSpell() {
     if (isCorrect) {
         input.style.borderColor = '#10b981';
         input.style.backgroundColor = '#ecfdf5';
+        // 禁用虚拟键盘
+        document.querySelectorAll('.vkbd-key').forEach(k => k.disabled = true);
         const wasFirstTry = !q._wrongTries;
         state.correctCount++;
         if (wasFirstTry) state.combo++;
@@ -868,8 +956,11 @@ async function submitSpell() {
     } else {
         input.style.borderColor = '#ef4444';
         input.style.backgroundColor = '#fef2f2';
+        // 禁用虚拟键盘
+        document.querySelectorAll('.vkbd-key').forEach(k => k.disabled = true);
         // 显示正确答案
         const spellHint = document.getElementById('spellHint');
+        spellHint.dataset.error = '1';
         spellHint.innerHTML = `<span style="color:#ef4444;font-weight:700">${correctAnswer}</span>`;
         q._wrongTries = (q._wrongTries || 0) + 1;
         state.combo = 0;
