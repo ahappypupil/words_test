@@ -1,25 +1,31 @@
 """
 新概念英语第一册 - 单词练习工具 v2.0
-Flask + SQLite + 用户系统 + 全屏PPT答题
+Flask + MySQL + 用户系统 + 全屏PPT答题
 """
-import sqlite3
+import pymysql
 import random
 import hashlib
 from flask import Flask, g, jsonify, request, render_template, session
 
 app = Flask(__name__)
 app.secret_key = 'nce1_study_secret_key_2024'
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATABASE = os.path.join(BASE_DIR, 'nce_words.db')
+
+# ========== MySQL 连接配置 ==========
+MYSQL_CONFIG = {
+    'host': '127.0.0.1',
+    'port': 3306,
+    'user': 'devuser',
+    'password': 'Dev@2026',
+    'database': 'nce_words',
+    'charset': 'utf8mb4',
+    'cursorclass': pymysql.cursors.DictCursor,
+}
 
 # ========== 数据库操作 ==========
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-        db.row_factory = sqlite3.Row
-        db.execute("PRAGMA journal_mode=WAL")
+        db = g._database = pymysql.connect(**MYSQL_CONFIG)
     return db
 
 @app.teardown_appcontext
@@ -34,7 +40,9 @@ def get_current_user():
     user_id = session.get('user_id')
     if user_id:
         db = get_db()
-        user = db.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+        with db.cursor() as cursor:
+            cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+            user = cursor.fetchone()
         return dict(user) if user else None
     return None
 
@@ -157,13 +165,15 @@ def register():
     if len(password) < 4:
         return jsonify({'error': '密码至少4个字符'}), 400
     db = get_db()
-    existing = db.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
-    if existing:
-        return jsonify({'error': '用户名已存在'}), 400
-    pw_hash = hash_password(password)
-    db.execute("INSERT INTO users (username, password_hash, nickname) VALUES (?, ?, ?)",
-               (username, pw_hash, nickname))
-    db.execute("INSERT INTO user_progress (user_id, score) VALUES (last_insert_rowid(), 0)")
+    with db.cursor() as cursor:
+        cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
+        existing = cursor.fetchone()
+        if existing:
+            return jsonify({'error': '用户名已存在'}), 400
+        pw_hash = hash_password(password)
+        cursor.execute("INSERT INTO users (username, password_hash, nickname) VALUES (%s, %s, %s)",
+                       (username, pw_hash, nickname))
+        cursor.execute("INSERT INTO user_progress (user_id, score) VALUES (LAST_INSERT_ID(), 0)")
     db.commit()
     return jsonify({'success': True, 'message': '注册成功，请登录'})
 
@@ -175,15 +185,18 @@ def login():
     if not username or not password:
         return jsonify({'error': '请输入用户名和密码'}), 400
     db = get_db()
-    user = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
-    if not user or user['password_hash'] != hash_password(password):
-        return jsonify({'error': '用户名或密码错误'}), 401
-    session['user_id'] = user['id']
-    # 确保有进度记录
-    prog = db.execute("SELECT * FROM user_progress WHERE user_id = ?", (user['id'],)).fetchone()
-    if not prog:
-        db.execute("INSERT INTO user_progress (user_id, score) VALUES (?, 0)", (user['id'],))
-        db.commit()
+    with db.cursor() as cursor:
+        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+        user = cursor.fetchone()
+        if not user or user['password_hash'] != hash_password(password):
+            return jsonify({'error': '用户名或密码错误'}), 401
+        session['user_id'] = user['id']
+        # 确保有进度记录
+        cursor.execute("SELECT * FROM user_progress WHERE user_id = %s", (user['id'],))
+        prog = cursor.fetchone()
+        if not prog:
+            cursor.execute("INSERT INTO user_progress (user_id, score) VALUES (%s, 0)", (user['id'],))
+    db.commit()
     return jsonify({
         'success': True,
         'user': {
@@ -216,18 +229,22 @@ def get_user():
 @app.route('/api/lessons', methods=['GET'])
 def get_lessons():
     db = get_db()
-    lessons = db.execute(
-        "SELECT lesson, COUNT(*) as cnt FROM words GROUP BY lesson ORDER BY lesson"
-    ).fetchall()
+    with db.cursor() as cursor:
+        cursor.execute(
+            "SELECT lesson, COUNT(*) as cnt FROM words GROUP BY lesson ORDER BY lesson"
+        )
+        lessons = cursor.fetchall()
     return jsonify({'data': [dict(l) for l in lessons]})
 
 @app.route('/api/categories', methods=['GET'])
 def get_categories():
     """获取所有思维导图分类"""
     db = get_db()
-    cats = db.execute(
-        "SELECT category, COUNT(*) as cnt FROM words WHERE category != '' GROUP BY category ORDER BY category"
-    ).fetchall()
+    with db.cursor() as cursor:
+        cursor.execute(
+            "SELECT category, COUNT(*) as cnt FROM words WHERE category != '' GROUP BY category ORDER BY category"
+        )
+        cats = cursor.fetchall()
     return jsonify({'data': [dict(c) for c in cats]})
 
 @app.route('/api/words/quiz', methods=['POST'])
@@ -243,12 +260,14 @@ def get_quiz():
     category = data.get('category', '')  # 思维导图分类
 
     db = get_db()
-    if lesson:
-        words = db.execute("SELECT * FROM words WHERE lesson = ?", (int(lesson),)).fetchall()
-    elif category:
-        words = db.execute("SELECT * FROM words WHERE category = ?", (category,)).fetchall()
-    else:
-        words = db.execute("SELECT * FROM words").fetchall()
+    with db.cursor() as cursor:
+        if lesson:
+            cursor.execute("SELECT * FROM words WHERE lesson = %s", (int(lesson),))
+        elif category:
+            cursor.execute("SELECT * FROM words WHERE category = %s", (category,))
+        else:
+            cursor.execute("SELECT * FROM words")
+        words = cursor.fetchall()
 
     words = [dict(w) for w in words]
     if not words:
@@ -256,12 +275,22 @@ def get_quiz():
 
     # 获取该用户在该范围内的错题（用于优先出题）
     if lesson or category:
-        error_ids = db.execute("""
-            SELECT DISTINCT word_id FROM error_log
-            WHERE user_id = ? AND word_id IN (
-                SELECT id FROM words WHERE """ + ("lesson = ?" if lesson else "category = ?") + """
-            )
-        """, (user['id'], int(lesson) if lesson else category)).fetchall()
+        with db.cursor() as cursor:
+            if lesson:
+                cursor.execute("""
+                    SELECT DISTINCT word_id FROM error_log
+                    WHERE user_id = %s AND word_id IN (
+                        SELECT id FROM words WHERE lesson = %s
+                    )
+                """, (user['id'], int(lesson)))
+            else:
+                cursor.execute("""
+                    SELECT DISTINCT word_id FROM error_log
+                    WHERE user_id = %s AND word_id IN (
+                        SELECT id FROM words WHERE category = %s
+                    )
+                """, (user['id'], category))
+            error_ids = cursor.fetchall()
         error_id_set = {e['word_id'] for e in error_ids}
         # 错题优先排在前面
         error_words = [w for w in words if w['id'] in error_id_set]
@@ -345,45 +374,50 @@ def log_answer():
     db = get_db()
     uid = user['id']
 
-    if not correct and word_id:
-        db.execute("INSERT INTO error_log (user_id, word_id, error_type) VALUES (?, ?, ?)",
-                   (uid, int(word_id), mode))
+    with db.cursor() as cursor:
+        if not correct and word_id:
+            cursor.execute("INSERT INTO error_log (user_id, word_id, error_type) VALUES (%s, %s, %s)",
+                           (uid, int(word_id), mode))
 
-    # 更新统计
-    stat = db.execute("""
-        SELECT * FROM stats WHERE user_id = ? AND mode = ?
-        AND date(created_at) = date('now', 'localtime')
-        ORDER BY id DESC LIMIT 1
-    """, (uid, mode)).fetchone()
+        # 更新统计
+        cursor.execute("""
+            SELECT * FROM stats WHERE user_id = %s AND mode = %s
+            AND DATE(created_at) = CURDATE()
+            ORDER BY id DESC LIMIT 1
+        """, (uid, mode))
+        stat = cursor.fetchone()
 
-    if stat:
-        db.execute("UPDATE stats SET total_questions = total_questions + 1, correct_count = correct_count + ?, wrong_count = wrong_count + ? WHERE id = ?",
-                   (1 if correct else 0, 0 if correct else 1, stat['id']))
-    else:
-        db.execute("INSERT INTO stats (user_id, total_questions, correct_count, wrong_count, mode) VALUES (?, 1, ?, ?, ?)",
-                   (uid, 1 if correct else 0, 0 if correct else 1, mode))
+        if stat:
+            cursor.execute("UPDATE stats SET total_questions = total_questions + 1, correct_count = correct_count + %s, wrong_count = wrong_count + %s WHERE id = %s",
+                           (1 if correct else 0, 0 if correct else 1, stat['id']))
+        else:
+            cursor.execute("INSERT INTO stats (user_id, total_questions, correct_count, wrong_count, mode) VALUES (%s, 1, %s, %s, %s)",
+                           (uid, 1 if correct else 0, 0 if correct else 1, mode))
 
-    # 更新进度
-    score_add = 10 if correct else 0
-    today = db.execute("SELECT date('now', 'localtime') as d").fetchone()['d']
+        # 更新进度
+        score_add = 10 if correct else 0
+        cursor.execute("SELECT CURDATE() as d")
+        today = cursor.fetchone()['d']
 
-    prog = db.execute("SELECT * FROM user_progress WHERE user_id = ?", (uid,)).fetchone()
-    if prog:
-        new_streak = prog['study_streak']
-        if prog['last_study_date'] != today:
-            yesterday = db.execute("SELECT date('now', '-1 day', 'localtime') as d").fetchone()['d']
-            if prog['last_study_date'] == yesterday:
-                new_streak = prog['study_streak'] + 1
-            else:
-                new_streak = 1
-        db.execute("""
-            UPDATE user_progress SET
-                score = score + ?,
-                total_practice_count = total_practice_count + 1,
-                study_streak = ?,
-                last_study_date = ?
-            WHERE user_id = ?
-        """, (score_add, new_streak, today, uid))
+        cursor.execute("SELECT * FROM user_progress WHERE user_id = %s", (uid,))
+        prog = cursor.fetchone()
+        if prog:
+            new_streak = prog['study_streak']
+            if prog['last_study_date'] != str(today):
+                cursor.execute("SELECT DATE_SUB(CURDATE(), INTERVAL 1 DAY) as d")
+                yesterday = cursor.fetchone()['d']
+                if prog['last_study_date'] == str(yesterday):
+                    new_streak = prog['study_streak'] + 1
+                else:
+                    new_streak = 1
+            cursor.execute("""
+                UPDATE user_progress SET
+                    score = score + %s,
+                    total_practice_count = total_practice_count + 1,
+                    study_streak = %s,
+                    last_study_date = %s
+                WHERE user_id = %s
+            """, (score_add, new_streak, str(today), uid))
 
     db.commit()
     return jsonify({'success': True, 'score_add': score_add})
@@ -396,10 +430,12 @@ def combo_update():
     data = request.json
     combo = data.get('combo', 0)
     db = get_db()
-    prog = db.execute("SELECT max_combo FROM user_progress WHERE user_id = ?", (user['id'],)).fetchone()
-    if prog and combo > prog['max_combo']:
-        db.execute("UPDATE user_progress SET max_combo = ? WHERE user_id = ?", (combo, user['id']))
-        db.commit()
+    with db.cursor() as cursor:
+        cursor.execute("SELECT max_combo FROM user_progress WHERE user_id = %s", (user['id'],))
+        prog = cursor.fetchone()
+        if prog and combo > prog['max_combo']:
+            cursor.execute("UPDATE user_progress SET max_combo = %s WHERE user_id = %s", (combo, user['id']))
+    db.commit()
     return jsonify({'success': True})
 
 # ---- 统计 ----
@@ -410,40 +446,47 @@ def get_stats():
         return jsonify({'error': '请先登录'}), 401
     uid = user['id']
     db = get_db()
-    total = db.execute("SELECT COUNT(*) as cnt FROM words").fetchone()['cnt']
+    with db.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) as cnt FROM words")
+        total = cursor.fetchone()['cnt']
 
-    # 错题统计
-    error_words = db.execute("""
-        SELECT w.id, w.word, w.chinese, w.phonetic, w.lesson, COUNT(e.id) as error_count
-        FROM words w
-        JOIN error_log e ON w.id = e.word_id
-        WHERE e.user_id = ?
-        GROUP BY w.id
-        ORDER BY error_count DESC
-    """, (uid,)).fetchall()
+        # 错题统计
+        cursor.execute("""
+            SELECT w.id, w.word, w.chinese, w.phonetic, w.lesson, COUNT(e.id) as error_count
+            FROM words w
+            JOIN error_log e ON w.id = e.word_id
+            WHERE e.user_id = %s
+            GROUP BY w.id
+            ORDER BY error_count DESC
+        """, (uid,))
+        error_words = cursor.fetchall()
 
-    progress = db.execute("SELECT * FROM user_progress WHERE user_id = ?", (uid,)).fetchone()
+        cursor.execute("SELECT * FROM user_progress WHERE user_id = %s", (uid,))
+        progress = cursor.fetchone()
 
-    recent = db.execute("""
-        SELECT mode, total_questions, correct_count, wrong_count, created_at
-        FROM stats WHERE user_id = ?
-        ORDER BY created_at DESC LIMIT 20
-    """, (uid,)).fetchall()
+        cursor.execute("""
+            SELECT mode, total_questions, correct_count, wrong_count, created_at
+            FROM stats WHERE user_id = %s
+            ORDER BY created_at DESC LIMIT 20
+        """, (uid,))
+        recent = cursor.fetchall()
 
-    mode_stats = db.execute("""
-        SELECT mode, SUM(total_questions) as total_q,
-               SUM(correct_count) as total_c, SUM(wrong_count) as total_w
-        FROM stats WHERE user_id = ?
-        GROUP BY mode
-    """, (uid,)).fetchall()
+        cursor.execute("""
+            SELECT mode, SUM(total_questions) as total_q,
+                   SUM(correct_count) as total_c, SUM(wrong_count) as total_w
+            FROM stats WHERE user_id = %s
+            GROUP BY mode
+        """, (uid,))
+        mode_stats = cursor.fetchall()
 
-    # 每课掌握度
-    lesson_mastery = db.execute("""
-        SELECT w.lesson, COUNT(DISTINCT e.word_id) as err_word_count
-        FROM error_log e JOIN words w ON e.word_id = w.id
-        WHERE e.user_id = ?
-        GROUP BY w.lesson
-    """, (uid,)).fetchall()
+        # 每课掌握度
+        cursor.execute("""
+            SELECT w.lesson, COUNT(DISTINCT e.word_id) as err_word_count
+            FROM error_log e JOIN words w ON e.word_id = w.id
+            WHERE e.user_id = %s
+            GROUP BY w.lesson
+        """, (uid,))
+        lesson_mastery = cursor.fetchall()
 
     return jsonify({
         'total_words': total,
@@ -466,36 +509,39 @@ def get_error_words():
         # 按题型分组查询
         mode_filter = request.args.get('mode', '')  # 可选过滤
 
-        if mode_filter:
-            words = db.execute("""
-                SELECT w.id, w.word, w.chinese, w.phonetic, w.lesson, COUNT(e.id) as error_count,
-                       e.error_type,
-                       MIN(e.created_at) as first_error, MAX(e.created_at) as last_error
-                FROM words w
-                JOIN error_log e ON w.id = e.word_id
-                WHERE e.user_id = ? AND e.error_type = ?
-                GROUP BY w.id
-                ORDER BY error_count DESC
-            """, (user['id'], mode_filter)).fetchall()
-        else:
-            words = db.execute("""
-                SELECT w.id, w.word, w.chinese, w.phonetic, w.lesson, COUNT(e.id) as error_count,
-                       e.error_type,
-                       MIN(e.created_at) as first_error, MAX(e.created_at) as last_error
-                FROM words w
-                JOIN error_log e ON w.id = e.word_id
-                WHERE e.user_id = ?
-                GROUP BY w.id, e.error_type
-                ORDER BY error_count DESC
-            """, (user['id'],)).fetchall()
+        with db.cursor() as cursor:
+            if mode_filter:
+                cursor.execute("""
+                    SELECT w.id, w.word, w.chinese, w.phonetic, w.lesson, COUNT(e.id) as error_count,
+                           e.error_type,
+                           MIN(e.created_at) as first_error, MAX(e.created_at) as last_error
+                    FROM words w
+                    JOIN error_log e ON w.id = e.word_id
+                    WHERE e.user_id = %s AND e.error_type = %s
+                    GROUP BY w.id
+                    ORDER BY error_count DESC
+                """, (user['id'], mode_filter))
+            else:
+                cursor.execute("""
+                    SELECT w.id, w.word, w.chinese, w.phonetic, w.lesson, COUNT(e.id) as error_count,
+                           e.error_type,
+                           MIN(e.created_at) as first_error, MAX(e.created_at) as last_error
+                    FROM words w
+                    JOIN error_log e ON w.id = e.word_id
+                    WHERE e.user_id = %s
+                    GROUP BY w.id, e.error_type
+                    ORDER BY error_count DESC
+                """, (user['id'],))
+            words = cursor.fetchall()
 
-        # 各题型统计
-        mode_stats = db.execute("""
-            SELECT error_type as mode, COUNT(*) as error_count, COUNT(DISTINCT word_id) as word_count
-            FROM error_log
-            WHERE user_id = ?
-            GROUP BY error_type
-        """, (user['id'],)).fetchall()
+            # 各题型统计
+            cursor.execute("""
+                SELECT error_type as mode, COUNT(*) as error_count, COUNT(DISTINCT word_id) as word_count
+                FROM error_log
+                WHERE user_id = %s
+                GROUP BY error_type
+            """, (user['id'],))
+            mode_stats = cursor.fetchall()
 
         return jsonify({
             'data': [dict(w) for w in words],
@@ -511,7 +557,8 @@ def reset_error_word(word_id):
     if not user:
         return jsonify({'error': '请先登录'}), 401
     db = get_db()
-    db.execute("DELETE FROM error_log WHERE user_id = ? AND word_id = ?", (user['id'], word_id))
+    with db.cursor() as cursor:
+        cursor.execute("DELETE FROM error_log WHERE user_id = %s AND word_id = %s", (user['id'], word_id))
     db.commit()
     return jsonify({'success': True})
 
@@ -523,10 +570,11 @@ def clear_error_words():
     db = get_db()
     data = request.json or {}
     mode = data.get('mode', '')
-    if mode:
-        db.execute("DELETE FROM error_log WHERE user_id = ? AND error_type = ?", (user['id'], mode))
-    else:
-        db.execute("DELETE FROM error_log WHERE user_id = ?", (user['id'],))
+    with db.cursor() as cursor:
+        if mode:
+            cursor.execute("DELETE FROM error_log WHERE user_id = %s AND error_type = %s", (user['id'], mode))
+        else:
+            cursor.execute("DELETE FROM error_log WHERE user_id = %s", (user['id'],))
     db.commit()
     return jsonify({'success': True})
 
@@ -537,15 +585,20 @@ def reset_progress():
         return jsonify({'error': '请先登录'}), 401
     uid = user['id']
     db = get_db()
-    db.execute("DELETE FROM stats WHERE user_id = ?", (uid,))
-    db.execute("DELETE FROM error_log WHERE user_id = ?", (uid,))
-    db.execute("UPDATE user_progress SET score=0, max_combo=0, study_streak=0, total_practice_count=0, last_study_date='' WHERE user_id = ?", (uid,))
+    with db.cursor() as cursor:
+        cursor.execute("DELETE FROM stats WHERE user_id = %s", (uid,))
+        cursor.execute("DELETE FROM error_log WHERE user_id = %s", (uid,))
+        cursor.execute("UPDATE user_progress SET score=0, max_combo=0, study_streak=0, total_practice_count=0, last_study_date='' WHERE user_id = %s", (uid,))
     db.commit()
     return jsonify({'success': True})
 
 if __name__ == '__main__':
-    import os
-    if not os.path.exists(DATABASE):
-        print('[ERROR] 数据库未初始化，请先运行: python init_db.py')
+    # 检查MySQL连接
+    try:
+        conn = pymysql.connect(**MYSQL_CONFIG)
+        conn.close()
+    except Exception as e:
+        print(f'[ERROR] MySQL连接失败，请先运行: python init_db.py')
+        print(f'  错误详情: {e}')
         exit(1)
     app.run(debug=True, host='0.0.0.0', port=5001)

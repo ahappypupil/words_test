@@ -1,20 +1,37 @@
-"""一键初始化数据库：建表 + 导入单词数据"""
+"""一键初始化数据库：建表 + 导入单词数据 (MySQL版)"""
 import json
-import sqlite3
 import os
 import sys
+import hashlib
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-DB_FILE = 'nce_words.db'
 WORDS_FILE = 'words.json'
+
+# ===== MySQL 连接配置 =====
+MYSQL_CONFIG = {
+    'host': '127.0.0.1',
+    'port': 3306,
+    'user': 'devuser',
+    'password': 'Dev@2026',
+    'database': 'nce_words',
+    'charset': 'utf8mb4',
+}
+
+
+def get_mysql_connection(db_name=None):
+    """获取MySQL连接，db_name为None时不指定数据库"""
+    import pymysql
+    config = MYSQL_CONFIG.copy()
+    if db_name:
+        config['database'] = db_name
+    else:
+        config.pop('database', None)
+    return pymysql.connect(**config)
 
 
 def init_database():
     """删除旧库，重新建表并导入数据"""
-    if os.path.exists(DB_FILE):
-        os.remove(DB_FILE)
-        print(f'[INFO] 已删除旧数据库 {DB_FILE}')
 
     if not os.path.exists(WORDS_FILE):
         print(f'[ERROR] 未找到 {WORDS_FILE}')
@@ -24,105 +41,116 @@ def init_database():
         words = json.load(f)
     print(f'[INFO] 从 {WORDS_FILE} 读取到 {len(words)} 个单词')
 
-    db = sqlite3.connect(DB_FILE)
-    db.execute('PRAGMA journal_mode=WAL')
-    db.execute('PRAGMA foreign_keys=ON')
+    # 先连接MySQL服务器（不指定数据库），创建数据库
+    conn = get_mysql_connection()
+    cursor = conn.cursor()
+    cursor.execute("DROP DATABASE IF EXISTS nce_words")
+    cursor.execute("CREATE DATABASE nce_words CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+    cursor.close()
+    conn.close()
+    print('[INFO] 已重建数据库 nce_words')
+
+    # 连接到新数据库
+    db = get_mysql_connection('nce_words')
+    cursor = db.cursor()
 
     # ---- 用户表 ----
-    db.execute('''CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL,
-        nickname TEXT DEFAULT '',
+    cursor.execute('''CREATE TABLE users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password_hash VARCHAR(64) NOT NULL,
+        nickname VARCHAR(50) DEFAULT '',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )''')
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4''')
 
     # ---- 单词表 ----
-    db.execute('''CREATE TABLE words (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        word TEXT NOT NULL,
-        chinese TEXT NOT NULL,
-        phonetic TEXT DEFAULT '',
-        lesson INTEGER DEFAULT 1,
-        category TEXT DEFAULT ''
-    )''')
+    cursor.execute('''CREATE TABLE words (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        word VARCHAR(100) NOT NULL,
+        chinese VARCHAR(200) NOT NULL,
+        phonetic VARCHAR(200) DEFAULT '',
+        lesson INT DEFAULT 1,
+        category VARCHAR(50) DEFAULT ''
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4''')
 
     # ---- 错误记录表 ----
-    db.execute('''CREATE TABLE error_log (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        word_id INTEGER NOT NULL,
-        error_type TEXT NOT NULL,
+    cursor.execute('''CREATE TABLE error_log (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        word_id INT NOT NULL,
+        error_type VARCHAR(20) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id),
         FOREIGN KEY (word_id) REFERENCES words(id)
-    )''')
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4''')
 
     # ---- 练习统计表 ----
-    db.execute('''CREATE TABLE stats (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        total_questions INTEGER DEFAULT 0,
-        correct_count INTEGER DEFAULT 0,
-        wrong_count INTEGER DEFAULT 0,
-        mode TEXT DEFAULT '',
-        lesson TEXT DEFAULT '',
+    cursor.execute('''CREATE TABLE stats (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        total_questions INT DEFAULT 0,
+        correct_count INT DEFAULT 0,
+        wrong_count INT DEFAULT 0,
+        mode VARCHAR(20) DEFAULT '',
+        lesson VARCHAR(20) DEFAULT '',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id)
-    )''')
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4''')
 
     # ---- 用户进度表 ----
-    db.execute('''CREATE TABLE user_progress (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER UNIQUE NOT NULL,
-        score INTEGER DEFAULT 0,
-        max_combo INTEGER DEFAULT 0,
-        study_streak INTEGER DEFAULT 0,
-        last_study_date TEXT DEFAULT '',
-        total_practice_count INTEGER DEFAULT 0,
+    cursor.execute('''CREATE TABLE user_progress (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT UNIQUE NOT NULL,
+        score INT DEFAULT 0,
+        max_combo INT DEFAULT 0,
+        study_streak INT DEFAULT 0,
+        last_study_date VARCHAR(20) DEFAULT '',
+        total_practice_count INT DEFAULT 0,
         FOREIGN KEY (user_id) REFERENCES users(id)
-    )''')
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4''')
 
     # ---- 导入单词 ----
     for w in words:
-        db.execute(
-            'INSERT INTO words (word, chinese, phonetic, lesson, category) VALUES (?, ?, ?, ?, ?)',
+        cursor.execute(
+            'INSERT INTO words (word, chinese, phonetic, lesson, category) VALUES (%s, %s, %s, %s, %s)',
             (w['word'], w['chinese'], w.get('phonetic', ''), w.get('lesson', 1), w.get('category', ''))
         )
 
     # ---- 创建默认用户 ----
-    import hashlib
     default_user = 'xby'
     default_nick = '小白杨'
     default_pass = hashlib.sha256('1234'.encode()).hexdigest()
-    db.execute(
-        'INSERT INTO users (username, password_hash, nickname) VALUES (?, ?, ?)',
+    cursor.execute(
+        'INSERT INTO users (username, password_hash, nickname) VALUES (%s, %s, %s)',
         (default_user, default_pass, default_nick)
     )
-    db.execute(
-        'INSERT INTO user_progress (user_id, score) VALUES (last_insert_rowid(), 0)'
+    cursor.execute(
+        'INSERT INTO user_progress (user_id, score) VALUES (LAST_INSERT_ID(), 0)'
     )
     print(f'[INFO] 已创建默认用户: {default_user} (昵称: {default_nick})')
 
     db.commit()
 
     # ---- 汇总 ----
-    word_count = db.execute('SELECT COUNT(*) as cnt FROM words').fetchone()[0]
-    lesson_count = db.execute(
-        'SELECT COUNT(DISTINCT lesson) as cnt FROM words'
-    ).fetchone()[0]
+    cursor.execute('SELECT COUNT(*) FROM words')
+    word_count = cursor.fetchone()[0]
+    cursor.execute('SELECT COUNT(DISTINCT lesson) FROM words')
+    lesson_count = cursor.fetchone()[0]
 
-    tables = db.execute(
-        "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
-    ).fetchall()
+    cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='nce_words' ORDER BY table_name")
+    tables = cursor.fetchall()
 
     print(f'\n[DONE] 建表完成，{word_count} 个单词, {lesson_count} 个课时')
     print('\n[INFO] 表结构:')
     for t in tables:
-        cnt = db.execute(f'SELECT COUNT(*) as cnt FROM {t[0]}').fetchone()[0]
-        cols = [c[1] for c in db.execute(f'PRAGMA table_info({t[0]})').fetchall()]
-        print(f'  {t[0]:<16} ({cnt:>4} 行) 列: {", ".join(cols)}')
+        tname = t[0]
+        cursor.execute(f'SELECT COUNT(*) FROM `{tname}`')
+        cnt = cursor.fetchone()[0]
+        cursor.execute(f'DESCRIBE `{tname}`')
+        cols = [c[0] for c in cursor.fetchall()]
+        print(f'  {tname:<16} ({cnt:>4} 行) 列: {", ".join(cols)}')
 
+    cursor.close()
     db.close()
     print('\n[OK] 初始化完成！可以启动 app.py 了')
 
