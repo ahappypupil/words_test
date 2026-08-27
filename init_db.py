@@ -14,7 +14,7 @@ MYSQL_CONFIG = {
     'port': 3306,
     'user': 'devuser',
     'password': 'Dev@2026',
-    'database': 'nce_words',
+    'database': 'ncf1_words',
     'charset': 'utf8mb4',
 }
 
@@ -44,14 +44,14 @@ def init_database():
     # 先连接MySQL服务器（不指定数据库），创建数据库
     conn = get_mysql_connection()
     cursor = conn.cursor()
-    cursor.execute("DROP DATABASE IF EXISTS nce_words")
-    cursor.execute("CREATE DATABASE nce_words CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+    cursor.execute("DROP DATABASE IF EXISTS ncf1_words")
+    cursor.execute("CREATE DATABASE ncf1_words CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     cursor.close()
     conn.close()
-    print('[INFO] 已重建数据库 nce_words')
+    print('[INFO] 已重建数据库 ncf1_words')
 
     # 连接到新数据库
-    db = get_mysql_connection('nce_words')
+    db = get_mysql_connection('ncf1_words')
     cursor = db.cursor()
 
     # ---- 用户表 ----
@@ -137,7 +137,7 @@ def init_database():
     cursor.execute('SELECT COUNT(DISTINCT lesson) FROM words')
     lesson_count = cursor.fetchone()[0]
 
-    cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='nce_words' ORDER BY table_name")
+    cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='ncf1_words' ORDER BY table_name")
     tables = cursor.fetchall()
 
     print(f'\n[DONE] 建表完成，{word_count} 个单词, {lesson_count} 个课时')

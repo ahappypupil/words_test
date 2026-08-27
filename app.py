@@ -16,7 +16,7 @@ MYSQL_CONFIG = {
     'port': 3306,
     'user': 'devuser',
     'password': 'Dev@2026',
-    'database': 'nce_words',
+    'database': 'ncf1_words',
     'charset': 'utf8mb4',
     'cursorclass': pymysql.cursors.DictCursor,
 }
