@@ -251,6 +251,42 @@ def get_wordset_detail(word_set_name):
         'total_pages': (total_count + per_page - 1) // per_page
     })
 
+@app.route('/api/wordsets/delete', methods=['POST'])
+def delete_wordset():
+    """删除单词集（需要管理员密码）"""
+    user = login_required()
+    if not user:
+        return jsonify({'error': '请先登录'}), 401
+    data = request.json or {}
+    admin_pass = data.get('admin_pass', '')
+    if admin_pass != 'cz':
+        return jsonify({'error': '管理员密码错误'}), 403
+    word_set_name = data.get('word_set', '').strip()
+    if not word_set_name:
+        return jsonify({'error': '单词集名称不能为空'}), 400
+
+    import os
+    db = get_db()
+    with db.cursor() as cursor:
+        cursor.execute("DELETE FROM words WHERE word_set = %s", (word_set_name,))
+    db.commit()
+
+    # 删除对应的 JSON 文件
+    filename = f'{word_set_name}.json'
+    filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)
+    if os.path.exists(filepath):
+        os.remove(filepath)
+
+    # 如果删除的是当前默认单词集，清空用户的默认设置
+    ws = session.get('word_set')
+    if ws == word_set_name:
+        session['word_set'] = ''
+        with db.cursor() as cursor:
+            cursor.execute("UPDATE users SET default_word_set = '' WHERE id = %s", (user['id'],))
+        db.commit()
+
+    return jsonify({'success': True, 'word_set': word_set_name})
+
 # ---- 用户认证 ----
 @app.route('/api/register', methods=['POST'])
 def register():

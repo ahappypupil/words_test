@@ -26,7 +26,8 @@ window.API_ROUTES = {
     masteredCount: "{{ url_for('get_mastered_count') }}",
     wordsets: "{{ url_for('get_wordsets') }}",
     setDefaultWordset: "{{ url_for('set_default_wordset') }}",
-    importWordset: "{{ url_for('import_wordset') }}"
+    importWordset: "{{ url_for('import_wordset') }}",
+    deleteWordset: "{{ url_for('delete_wordset') }}"
 };
 </script>
 
@@ -311,6 +312,19 @@ window.API_ROUTES = {
         <button class="nav-btn" data-view="wordsets" onclick="switchView('wordsets')">📚 单词集</button>
         <button class="nav-btn" data-view="errorbook" onclick="switchView('errorbook')">📒 错题<span class="err-dot" id="errDot"></span></button>
     </nav>
+</div>
+
+<!-- 删除单词集密码弹窗 -->
+<div class="overlay" id="deleteWordsetOverlay" style="display:none">
+    <div class="auth-card" style="max-width:360px">
+        <h3 style="color:#ef4444">🗑️ 删除单词集</h3>
+        <p style="font-size:14px;color:var(--text-light);margin-bottom:12px">
+            确认删除「<strong id="deleteWsName"></strong>」？此操作不可恢复！
+        </p>
+        <input type="password" id="deleteWsPwd" placeholder="管理员密码" autocomplete="off">
+        <button class="btn-primary" style="background:linear-gradient(135deg,#ef4444,#dc2626)" onclick="confirmDeleteWordset()">确认删除</button>
+        <button class="btn-back" style="margin-top:8px;width:100%" onclick="cancelDeleteWordset()">取消</button>
+    </div>
 </div>
 
 <!-- Toast -->

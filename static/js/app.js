@@ -451,6 +451,7 @@ async function loadWordsetManageList() {
                 <div class="wordset-manage-actions">
                     <button class="btn-sm" onclick="viewWordsetDetail('${s.word_set}')">👁️ 查看</button>
                     <button class="btn-sm" onclick="useWordset('${s.word_set}')">${isActive ? '✅ 当前' : '切换'}</button>
+                    <button class="btn-sm btn-sm-danger" onclick="deleteWordset('${s.word_set}')">🗑️ 删除</button>
                 </div>
             </div>`;
         }).join('');
@@ -563,6 +564,49 @@ async function useWordset(ws) {
     await switchWordset(ws);
     loadWordsetManageList();
     showToast(`已切换到「${ws}」单词集`, 'success');
+}
+
+// ---- 删除单词集 ----
+let _deleteWsTarget = '';
+
+function deleteWordset(ws) {
+    _deleteWsTarget = ws;
+    document.getElementById('deleteWsName').textContent = ws;
+    document.getElementById('deleteWsPwd').value = '';
+    document.getElementById('deleteWordsetOverlay').style.display = '';
+    setTimeout(() => document.getElementById('deleteWsPwd').focus(), 100);
+}
+
+function cancelDeleteWordset() {
+    document.getElementById('deleteWordsetOverlay').style.display = 'none';
+    _deleteWsTarget = '';
+}
+
+async function confirmDeleteWordset() {
+    const pwd = document.getElementById('deleteWsPwd').value.trim();
+    if (!pwd) { showToast('请输入管理员密码', 'error'); return; }
+
+    try {
+        const res = await fetch(window.API_ROUTES.deleteWordset, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ admin_pass: pwd, word_set: _deleteWsTarget })
+        });
+        const data = await res.json();
+        if (data.error) { showToast(data.error, 'error'); return; }
+        showToast(`已删除「${data.word_set}」单词集`, 'success');
+        cancelDeleteWordset();
+        // 如果删除的是当前单词集，切到第一个
+        if (state.wordSet === data.word_set) {
+            state.wordSet = '';
+        }
+        await loadWordsets();
+        loadWordsetManageList();
+        loadLessonGrid();
+        updateTopBar();
+    } catch (e) {
+        showToast('删除失败', 'error');
+    }
 }
 
 // ========== 首页 Tab 切换 ==========

@@ -1421,6 +1421,14 @@ gap: 14px;
     border-color: var(--primary);
     background: #faf5ff;
 }
+.btn-sm-danger{
+    color: #ef4444;
+    border-color: #fecaca;
+}
+.btn-sm-danger:hover{
+    border-color: #ef4444;
+    background: #fef2f2;
+}
 .wordset-detail-section h3{
     font-size: 16px;
     margin-bottom: 8px;
