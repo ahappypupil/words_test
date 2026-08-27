@@ -141,6 +141,19 @@ def init_database():
     )
     print(f'[INFO] 已创建默认用户: {default_user} (昵称: {default_nick})')
 
+    # ---- 创建测试用户 ----
+    test_user = 'test'
+    test_nick = '测试'
+    test_pass = hashlib.sha256('1234'.encode()).hexdigest()
+    cursor.execute(
+        'INSERT INTO users (username, password_hash, nickname) VALUES (%s, %s, %s)',
+        (test_user, test_pass, test_nick)
+    )
+    cursor.execute(
+        'INSERT INTO user_progress (user_id, score) VALUES (LAST_INSERT_ID(), 0)'
+    )
+    print(f'[INFO] 已创建测试用户: {test_user} (昵称: {test_nick})')
+
     db.commit()
 
     # ---- 汇总 ----
