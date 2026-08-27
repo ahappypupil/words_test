@@ -3,6 +3,12 @@
  * PPT全屏风格 + 用户系统 + 课时选择
  */
 
+// ========== 工具函数 ==========
+function isMobile() {
+    return /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent)
+        || (navigator.maxTouchPoints > 0 && window.innerWidth <= 768);
+}
+
 // ========== 全局状态 ==========
 const state = {
     mode: 'en2cn',
@@ -625,7 +631,13 @@ function showQuestion() {
             input.addEventListener('input', () => updateSpellHint());
             input._vkbdBound = true;
         }
-        input.focus();
+        // 手机端设 readOnly 防止弹出系统键盘，PC 端可正常输入
+        if (isMobile()) {
+            input.readOnly = true;
+        } else {
+            input.readOnly = false;
+            input.focus();
+        }
     } else {
         // 选择题模式：显示选项
         grid.style.display = '';
