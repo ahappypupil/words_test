@@ -559,9 +559,71 @@ body::after{
 
 /* 选项 */
 .options-grid{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 14px;
+}
+
+/* ===== 单词拼写模式 ===== */
+.spell-area{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+.spell-hint{
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text-light);
+    letter-spacing: 6px;
+    font-family: 'Courier New', monospace;
+    min-height: 36px;
+}
+.spell-input{
+    width: 100%;
+    max-width: 400px;
+    padding: 14px 20px;
+    border: 3px solid #e5e7eb;
+    border-radius: var(--radius-sm);
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+    transition: border-color 0.25s ease, background 0.25s ease;
+    font-family: 'Courier New', monospace;
+}
+.spell-input:focus{
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(124,58,237,0.1);
+}
+.spell-input:disabled{
+    cursor: not-allowed;
+}
+.btn-spell-submit{
+    padding: 10px 40px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+}
+.btn-spell-submit:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(124,58,237,0.4);
+}
+.btn-spell-submit:active{
+    transform: translateY(0);
+}
+.btn-spell-submit:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 .option-btn{
     padding: 16px 20px;

@@ -79,6 +79,7 @@ window.API_ROUTES = {
                 <button class="mode-btn active" data-mode="en2cn" onclick="selectModeBtn(this)">🇬🇧→🇨🇳 英译汉</button>
                 <button class="mode-btn" data-mode="cn2en" onclick="selectModeBtn(this)">🇨🇳→🇬🇧 汉译英</button>
                 <button class="mode-btn" data-mode="cloze" onclick="selectModeBtn(this)">🔤 单词补全</button>
+                <button class="mode-btn" data-mode="spell" onclick="selectModeBtn(this)">✍️ 单词拼写</button>
             </div>
 
             <div class="home-tabs">
@@ -130,6 +131,11 @@ window.API_ROUTES = {
                             <div class="question-main" id="questionMain">excuse</div>
                             <div class="question-sub" id="questionSub">音标: /ɪkˈskjuːs/</div>
                             <div class="options-grid" id="optionsGrid"></div>
+                            <div class="spell-area" id="spellArea" style="display:none">
+                                <div class="spell-hint" id="spellHint"></div>
+                                <input type="text" id="spellInput" class="spell-input" placeholder="输入英文单词..." autocomplete="off" autocapitalize="off" spellcheck="false">
+                                <button class="btn-spell-submit" id="btnSpellSubmit" onclick="submitSpell()">确认</button>
+                            </div>
                         </div>
                     </div>
 
@@ -220,6 +226,9 @@ window.API_ROUTES = {
                     </button>
                     <button class="error-tab" data-mode="cloze" onclick="switchErrorTab(this, 'cloze')">
                         🔤 补全<span class="error-tab-count" id="errCountCloze">0</span>
+                    </button>
+                    <button class="error-tab" data-mode="spell" onclick="switchErrorTab(this, 'spell')">
+                        ✍️ 拼写<span class="error-tab-count" id="errCountSpell">0</span>
                     </button>
                 </div>
 

@@ -324,12 +324,15 @@ function showLogin() {
 }
 
 // 登录框回车键
+// 拼写输入框回车键
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         const overlay = document.getElementById('authOverlay');
-        if (overlay.style.display !== 'none') {
+        if (overlay && overlay.style.display !== 'none') {
             const regVisible = document.getElementById('registerForm').style.display !== 'none';
             if (regVisible) doRegister(); else doLogin();
+        } else if (state.mode === 'spell' && document.activeElement && document.activeElement.id === 'spellInput') {
+            submitSpell();
         }
     }
 });
@@ -589,22 +592,44 @@ function showQuestion() {
         hint = `释义: ${q.chinese}  ·  Lesson ${q.lesson || '—'}`;
     } else if (state.mode === 'en2cn') {
         hint = `音标: /${q.phonetic || '—'}/  ·  Lesson ${q.lesson || '—'}`;
+    } else if (state.mode === 'spell') {
+        hint = `音标: /${q.phonetic || '—'}/  ·  ${q.word_length || ''}个字母  ·  Lesson ${q.lesson || '—'}`;
     } else {
         hint = `Lesson ${q.lesson || '—'}`;
     }
     document.getElementById('questionSub').textContent = hint;
 
-    // 选项
+    // 选项或拼写输入
     const grid = document.getElementById('optionsGrid');
+    const spellArea = document.getElementById('spellArea');
     grid.innerHTML = '';
-    const isCloze = state.mode === 'cloze';
-    q.options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn' + (isCloze ? ' option-cloze' : '');
-        btn.textContent = opt;
-        btn.addEventListener('click', (e) => handleAnswer(opt, q.answer, e, btn));
-        grid.appendChild(btn);
-    });
+
+    if (state.mode === 'spell') {
+        // 拼写模式：显示输入框
+        grid.style.display = 'none';
+        spellArea.style.display = '';
+        const spellHint = document.getElementById('spellHint');
+        // 显示字母数提示（每个字母用 _ 表示）
+        spellHint.textContent = `${'＿'.repeat(q.word_length || q.answer.length)}`;
+        const input = document.getElementById('spellInput');
+        input.value = '';
+        input.disabled = false;
+        input.style.borderColor = '';
+        input.focus();
+        document.getElementById('btnSpellSubmit').disabled = false;
+    } else {
+        // 选择题模式：显示选项
+        grid.style.display = '';
+        spellArea.style.display = 'none';
+        const isCloze = state.mode === 'cloze';
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (isCloze ? ' option-cloze' : '');
+            btn.textContent = opt;
+            btn.addEventListener('click', (e) => handleAnswer(opt, q.answer, e, btn));
+            grid.appendChild(btn);
+        });
+    }
 
     // 内容静默更新，不闪动
 }
@@ -782,6 +807,94 @@ function retryLesson() {
     }
 }
 
+// ========== 单词拼写模式 ==========
+async function submitSpell() {
+    const q = state.questions[state.currentIndex];
+    const input = document.getElementById('spellInput');
+    const userAnswer = input.value.trim();
+    if (!userAnswer) return;
+
+    const correctAnswer = q.answer;
+    const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+
+    // 禁用输入
+    input.disabled = true;
+    document.getElementById('btnSpellSubmit').disabled = true;
+
+    if (isCorrect) {
+        input.style.borderColor = '#10b981';
+        input.style.backgroundColor = '#ecfdf5';
+        const wasFirstTry = !q._wrongTries;
+        state.correctCount++;
+        if (wasFirstTry) state.combo++;
+        const comboBonus = Math.floor(state.combo / 3) * 5;
+        const points = 10 + comboBonus;
+        state.score += points;
+        state.totalScoreAdd += points;
+        if (state.combo > state.maxCombo) state.maxCombo = state.combo;
+        playSound('correct');
+
+        if (state.combo >= 3 && state.combo % 3 === 0) {
+            playSound('combo');
+            showToast(`🔥 ${state.combo} 连击！`, 'success');
+        }
+
+        let msg = `+${points}分`;
+        if (!wasFirstTry) msg = `答对了! +${points}分`;
+        showSideFeedback(true, msg);
+
+        try {
+            await fetch(window.API_ROUTES.logAnswer, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word_id: q.word_id, correct: true, mode: state.mode, user_answer: userAnswer })
+            });
+            if (state.combo > 0 && state.combo % 5 === 0) {
+                await fetch(window.API_ROUTES.comboUpdate, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ combo: state.combo })
+                });
+            }
+        } catch (e) { console.error('log_answer error:', e); }
+
+        document.getElementById('quizCombo').textContent = `⚡${state.combo}`;
+        document.getElementById('quizScore').textContent = state.score;
+
+        setTimeout(() => {
+            state.currentIndex++;
+            showQuestion();
+        }, 1200);
+    } else {
+        input.style.borderColor = '#ef4444';
+        input.style.backgroundColor = '#fef2f2';
+        // 显示正确答案
+        const spellHint = document.getElementById('spellHint');
+        spellHint.innerHTML = `<span style="color:#ef4444;font-weight:700">${correctAnswer}</span>`;
+        q._wrongTries = (q._wrongTries || 0) + 1;
+        state.combo = 0;
+        state.wrongCount++;
+        playSound('wrong');
+        showSideFeedback(false, '');
+
+        try {
+            await fetch(window.API_ROUTES.logAnswer, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word_id: q.word_id, correct: false, mode: state.mode, user_answer: userAnswer })
+            });
+        } catch (e) { console.error('log_answer error:', e); }
+
+        document.getElementById('quizCombo').textContent = `⚡${state.combo}`;
+        document.getElementById('quizScore').textContent = state.score;
+
+        setTimeout(() => {
+            state.currentIndex++;
+            showQuestion();
+        }, 2000);
+    }
+}
+
 // ========== 更新顶部栏 ==========
 async function updateTopBar() {
     try {
@@ -821,7 +934,7 @@ async function loadStats() {
         // 模式统计
         const mg = document.getElementById('modeStatsGrid');
         if (data.mode_stats && data.mode_stats.length) {
-            const mn = { 'en2cn': '英译汉', 'cn2en': '汉译英', 'cloze': '单词补全' };
+            const mn = { 'en2cn': '英译汉', 'cn2en': '汉译英', 'cloze': '单词补全', 'spell': '单词拼写' };
             mg.innerHTML = data.mode_stats.map(m => {
                 const rate = m.total_q > 0 ? Math.round(m.total_c / m.total_q * 100) : 0;
                 const hue = rate >= 80 ? 160 : rate >= 60 ? 200 : 0;
@@ -838,7 +951,7 @@ async function loadStats() {
         // 最近
         const rl = document.getElementById('recentList');
         if (data.recent && data.recent.length) {
-            const mn = { 'en2cn': '英译汉', 'cn2en': '汉译英', 'cloze': '单词补全' };
+            const mn = { 'en2cn': '英译汉', 'cn2en': '汉译英', 'cloze': '单词补全', 'spell': '单词拼写' };
             rl.innerHTML = data.recent.slice(0, 15).map(r => {
                 const rate = r.total_questions > 0 ? Math.round(r.correct_count / r.total_questions * 100) : 0;
                 return `<div class="recent-item">
@@ -856,8 +969,8 @@ async function loadStats() {
 // ========== 错题本 ==========
 let currentErrorMode = ''; // 当前选中的题型 Tab
 
-const modeNames = { 'en2cn': '英译汉', 'cn2en': '汉译英', 'cloze': '单词补全' };
-const modeIcons = { 'en2cn': '🇬🇧→🇨🇳', 'cn2en': '🇨🇳→🇬🇧', 'cloze': '🔤' };
+const modeNames = { 'en2cn': '英译汉', 'cn2en': '汉译英', 'cloze': '单词补全', 'spell': '单词拼写' };
+const modeIcons = { 'en2cn': '🇬🇧→🇨🇳', 'cn2en': '🇨🇳→🇬🇧', 'cloze': '🔤', 'spell': '✍️' };
 
 let _errorBookRetry = 0;
 async function loadErrorBook(retryCount = 0) {
@@ -879,7 +992,7 @@ async function loadErrorBook(retryCount = 0) {
             });
             document.getElementById('errCountAll').textContent = totalCount;
             // 清空没有数据的 tab 计数
-            ['en2cn', 'cn2en', 'cloze'].forEach(m => {
+            ['en2cn', 'cn2en', 'cloze', 'spell'].forEach(m => {
                 const found = data.mode_stats.find(ms => ms.mode === m);
                 const el = document.getElementById('errCount' + m.charAt(0).toUpperCase() + m.slice(1));
                 if (el && !found) el.textContent = '0';

@@ -343,6 +343,17 @@ def get_quiz():
                 'answer': missing,
                 'options': opts
             })
+        elif mode == 'spell':
+            result.append({
+                'word_id': word['id'],
+                'question': word['chinese'],
+                'full_word': word['word'],
+                'chinese': word['chinese'],
+                'phonetic': word.get('phonetic', ''),
+                'lesson': word.get('lesson', ''),
+                'answer': word['word'],
+                'word_length': len(word['word'])
+            })
 
     # 确定标题
     if lesson:
