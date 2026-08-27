@@ -1218,13 +1218,23 @@ async function clearErrors() {
 }
 
 async function resetProgress() {
-    if (!confirm('确定重置所有学习进度？不可恢复！')) return;
-    await fetch(window.API_ROUTES.resetProgress, { method: 'POST' });
-    showToast('进度已重置', 'info');
-    updateTopBar();
-    updateErrorDot();
-    loadStats();
-    loadLessonGrid();
+    const adminPass = prompt('请输入管理员密码才能重置进度：');
+    if (adminPass === null) return;
+    if (adminPass.trim() === '') { showToast('请输入管理员密码', 'error'); return; }
+    try {
+        const res = await fetch(window.API_ROUTES.resetProgress, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ admin_pass: adminPass.trim() })
+        });
+        const data = await res.json();
+        if (data.error) { showToast(data.error, 'error'); return; }
+        showToast('进度已重置', 'info');
+        updateTopBar();
+        updateErrorDot();
+        loadStats();
+        loadLessonGrid();
+    } catch (e) { showToast('重置失败', 'error'); }
 }
 
 // ========== 启动 ==========

@@ -650,6 +650,10 @@ def reset_progress():
     user = login_required()
     if not user:
         return jsonify({'error': '请先登录'}), 401
+    data = request.json or {}
+    admin_pass = data.get('admin_pass', '')
+    if admin_pass != 'cz':
+        return jsonify({'error': '管理员密码错误'}), 403
     uid = user['id']
     db = get_db()
     with db.cursor() as cursor:
